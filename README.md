@@ -13,6 +13,7 @@ A modern React Next.js application built with TypeScript and Material-UI.
 - 📊 **Test Coverage** reporting
 - 🔍 **ESLint & Prettier** for code quality
 - 🪝 **Pre-commit Hooks** with Husky & lint-staged
+- 🔧 **Environment Variables** with type safety and validation
 - 📱 **PWA Support** with offline capabilities
 - ⚡ **Service Worker** with stale-while-revalidate strategy
 
@@ -110,6 +111,81 @@ npm run test:coverage
 # Run tests for CI
 npm run test:ci
 ```
+
+## Environment Variables
+
+This project includes a comprehensive environment variables setup with type safety and validation.
+
+### Setup
+
+1. **Copy the example file:**
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. **Update the values** in `.env.local` with your actual configuration
+
+### Configuration Files
+
+- **`.env.example`** - Template with all available environment variables
+- **`.env.local`** - Local development configuration (ignored by git)
+- **`src/types/env.d.ts`** - TypeScript definitions for environment variables
+- **`src/lib/env.ts`** - Environment utilities with validation
+
+### Available Variables
+
+#### Client-side (NEXT*PUBLIC*\*)
+
+- `NEXT_PUBLIC_APP_NAME` - Application name
+- `NEXT_PUBLIC_APP_VERSION` - Application version
+- `NEXT_PUBLIC_APP_URL` - Application URL
+- `NEXT_PUBLIC_API_URL` - API endpoint URL
+- `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` - Google Analytics tracking ID
+- `NEXT_PUBLIC_SENTRY_DSN` - Sentry error tracking DSN
+- `NEXT_PUBLIC_ENABLE_ANALYTICS` - Enable/disable analytics
+- `NEXT_PUBLIC_ENABLE_PWA` - Enable/disable PWA features
+- `NEXT_PUBLIC_ENABLE_DEBUG` - Enable/disable debug mode
+
+#### Server-side
+
+- `API_SECRET_KEY` - Secret key for API authentication
+- `DATABASE_URL` - Database connection string
+- `NODE_ENV` - Environment (development/production/test)
+
+### Usage
+
+```typescript
+import { clientEnv, serverEnv, getEnvInfo } from '@/lib/env';
+
+// Client-side usage
+const appName = clientEnv.appName;
+const isDebugEnabled = clientEnv.enableDebug;
+
+// Server-side usage (API routes)
+const secretKey = serverEnv.apiSecretKey;
+
+// Environment info
+const envInfo = getEnvInfo();
+console.log(envInfo.isDevelopment); // true in development
+```
+
+### Validation
+
+The environment configuration includes automatic validation:
+
+```typescript
+import { validateEnv } from '@/lib/env';
+
+const validation = validateEnv();
+if (!validation.isValid) {
+  console.warn('Missing required environment variables');
+}
+```
+
+### Example Component
+
+The project includes an `EnvInfo` component that displays environment information in development mode or when debug is enabled.
 
 ## Code Quality
 

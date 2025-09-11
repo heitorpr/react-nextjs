@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Favorite, GitHub } from '@mui/icons-material';
 import PWAInstaller from '../components/PWAInstaller';
+import EnvInfo from '../components/EnvInfo';
 
 export default function Home(): React.JSX.Element {
   const handleClick = (): void => {
@@ -96,6 +97,7 @@ export default function Home(): React.JSX.Element {
         </Box>
       </Container>
 
+      <EnvInfo />
       <PWAInstaller />
     </>
   );
