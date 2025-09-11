@@ -52,8 +52,6 @@ logs
 # Optional npm cache directory
 .npm
 
-# Optional eslint cache
-.eslintcache
 
 # Microbundle cache
 .rpt2_cache/
@@ -108,23 +106,19 @@ Thumbs.db
 # Sentry
 .sentryclirc
 
-# PWA files
-**/public/sw.js
-**/public/workbox-*.js
-**/public/worker-*.js
-**/public/sw.js.map
-**/public/workbox-*.js.map
-**/public/worker-*.js.map
+# Code quality tools
+.eslintcache
+.prettiercache
+.stylelintcache
+
+# Lint-staged backup files
+*.orig
+*.rej
 
 # PWA generated files (next-pwa)
 public/sw.js
 public/workbox-*.js
 public/worker-*.js
-public/sw.js.map
-public/workbox-*.js.map
-public/worker-*.js.map
-
-# PWA build artifacts
 public/sw.js.map
 public/workbox-*.js.map
 public/worker-*.js.map

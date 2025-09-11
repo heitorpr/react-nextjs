@@ -11,6 +11,8 @@ A modern React Next.js application built with TypeScript and Material-UI.
 - ⚛️ **React 19** with latest features
 - 🧪 **Jest & React Testing Library** for comprehensive testing
 - 📊 **Test Coverage** reporting
+- 🔍 **ESLint & Prettier** for code quality
+- 🪝 **Pre-commit Hooks** with Husky & lint-staged
 - 📱 **PWA Support** with offline capabilities
 - ⚡ **Service Worker** with stale-while-revalidate strategy
 
@@ -47,6 +49,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - `npm run build` - Build the application for production
 - `npm run start` - Start the production server
 - `npm run lint` - Run ESLint
+- `npm run lint:fix` - Run ESLint with auto-fix
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting
 - `npm test` - Run tests once
 - `npm run test:watch` - Run tests in watch mode
 - `npm run test:coverage` - Run tests with coverage report
@@ -104,6 +109,44 @@ npm run test:coverage
 
 # Run tests for CI
 npm run test:ci
+```
+
+## Code Quality
+
+This project uses several tools to maintain high code quality:
+
+### ESLint
+
+- Configured with Next.js and Prettier integration
+- Enforces consistent coding standards
+- Catches potential bugs and code smells
+
+### Prettier
+
+- Automatic code formatting
+- Consistent code style across the project
+- Integrated with ESLint for seamless workflow
+
+### Pre-commit Hooks
+
+- **Husky**: Git hooks management
+- **lint-staged**: Runs linters only on staged files
+- Automatically formats and lints code before commits
+
+### Usage
+
+```bash
+# Check for linting issues
+npm run lint
+
+# Fix auto-fixable issues
+npm run lint:fix
+
+# Format all files
+npm run format
+
+# Check formatting without fixing
+npm run format:check
 ```
 
 ## Test Coverage
