@@ -14,6 +14,8 @@ import {
 import { Favorite, GitHub } from '@mui/icons-material';
 import PWAInstaller from '../components/PWAInstaller';
 import EnvInfo from '../components/EnvInfo';
+import { PageErrorBoundary } from '../components/PageErrorBoundary';
+import { ComponentErrorBoundary } from '../components/ComponentErrorBoundary';
 
 export default function Home(): React.JSX.Element {
   const handleClick = (): void => {
@@ -21,7 +23,7 @@ export default function Home(): React.JSX.Element {
   };
 
   return (
-    <>
+    <PageErrorBoundary pageName='Home'>
       <AppBar position='static'>
         <Toolbar>
           <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
@@ -97,8 +99,13 @@ export default function Home(): React.JSX.Element {
         </Box>
       </Container>
 
-      <EnvInfo />
-      <PWAInstaller />
-    </>
+      <ComponentErrorBoundary componentName='EnvInfo'>
+        <EnvInfo />
+      </ComponentErrorBoundary>
+
+      <ComponentErrorBoundary componentName='PWAInstaller'>
+        <PWAInstaller />
+      </ComponentErrorBoundary>
+    </PageErrorBoundary>
   );
 }
