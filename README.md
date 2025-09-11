@@ -50,6 +50,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - `npm test` - Run tests once
 - `npm run test:watch` - Run tests in watch mode
 - `npm run test:coverage` - Run tests with coverage report
+- `npm run test:coverage:open` - Open coverage report in browser
 - `npm run test:ci` - Run tests for CI/CD pipeline
 - `npm run generate-icons` - Generate PWA icons
 - `npm run build:pwa` - Build for PWA deployment
@@ -105,6 +106,19 @@ npm run test:coverage
 npm run test:ci
 ```
 
+## Test Coverage
+
+This project maintains high test coverage standards:
+
+- **Statements**: 95% minimum
+- **Functions**: 95% minimum
+- **Lines**: 95% minimum
+- **Branches**: 85% minimum
+
+Coverage reports are generated in the `/coverage` directory and can be viewed by opening `coverage/lcov-report/index.html` in your browser.
+
+```
+
 ## PWA Features
 
 This project includes comprehensive Progressive Web App (PWA) support:
@@ -148,3 +162,4 @@ To learn more about the technologies used:
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Material-UI Documentation](https://mui.com/)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+```
