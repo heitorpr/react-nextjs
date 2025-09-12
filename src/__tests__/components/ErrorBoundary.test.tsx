@@ -158,4 +158,21 @@ describe('ErrorBoundary', () => {
 
     expect(screen.getByText(/Error ID:/)).toBeInTheDocument();
   });
+
+  it('handles error in production environment', () => {
+    // Mock NODE_ENV to be production
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
+    render(
+      <ErrorBoundary>
+        <ThrowError shouldThrow={true} />
+      </ErrorBoundary>
+    );
+
+    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+
+    // Restore original NODE_ENV
+    process.env.NODE_ENV = originalEnv;
+  });
 });

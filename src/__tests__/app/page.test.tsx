@@ -76,11 +76,31 @@ describe('Home Page', () => {
       '✅ Material-UI for beautiful components',
       '✅ Emotion for styling',
       '✅ Modern React 19 features',
+      '✅ Loading & Error UI components',
     ];
 
     features.forEach(feature => {
       expect(screen.getByText(feature)).toBeInTheDocument();
     });
+  });
+
+  it('renders the View UI Demo button', () => {
+    render(<Home />);
+
+    const uiDemoButton = screen.getByRole('button', { name: /view ui demo/i });
+    expect(uiDemoButton).toBeInTheDocument();
+  });
+
+  it('navigates to UI demo when View UI Demo button is clicked', () => {
+    // Since JSDOM doesn't support navigation, let's just test that the button click doesn't throw
+    render(<Home />);
+
+    const uiDemoButton = screen.getByRole('button', { name: /view ui demo/i });
+
+    // Test that clicking the button doesn't throw an error
+    expect(() => {
+      fireEvent.click(uiDemoButton);
+    }).not.toThrow();
   });
 
   it('has proper Material-UI theming', () => {

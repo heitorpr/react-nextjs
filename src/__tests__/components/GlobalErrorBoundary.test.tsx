@@ -123,4 +123,21 @@ describe('GlobalErrorBoundary', () => {
       screen.getByText(/The application encountered an unexpected error/)
     ).toBeInTheDocument();
   });
+
+  it('handles error in production environment', () => {
+    // Mock NODE_ENV to be production
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
+    render(
+      <GlobalErrorBoundary>
+        <ThrowError shouldThrow={true} />
+      </GlobalErrorBoundary>
+    );
+
+    expect(screen.getByText('Oops! Something went wrong')).toBeInTheDocument();
+
+    // Restore original NODE_ENV
+    process.env.NODE_ENV = originalEnv;
+  });
 });

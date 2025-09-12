@@ -59,16 +59,34 @@ export default function Home(): React.JSX.Element {
             <Typography variant='h5' component='p' sx={{ mb: 3 }}>
               Welcome to your modern Next.js app with Material-UI and TypeScript
             </Typography>
-            <Button
-              variant='contained'
-              color='secondary'
-              size='large'
-              startIcon={<Favorite />}
-              onClick={handleClick}
-              sx={{ mt: 2 }}
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+              }}
             >
-              Click Me!
-            </Button>
+              <Button
+                variant='contained'
+                color='secondary'
+                size='large'
+                startIcon={<Favorite />}
+                onClick={handleClick}
+                sx={{ mt: 2 }}
+              >
+                Click Me!
+              </Button>
+              <Button
+                variant='outlined'
+                color='primary'
+                size='large'
+                onClick={() => (window.location.href = '/ui-demo')}
+                sx={{ mt: 2 }}
+              >
+                View UI Demo
+              </Button>
+            </Box>
           </Paper>
 
           <Paper elevation={2} sx={{ p: 3, width: '100%' }}>
@@ -93,6 +111,9 @@ export default function Home(): React.JSX.Element {
               <Typography variant='body1'>✅ Emotion for styling</Typography>
               <Typography variant='body1'>
                 ✅ Modern React 19 features
+              </Typography>
+              <Typography variant='body1'>
+                ✅ Loading & Error UI components
               </Typography>
             </Box>
           </Paper>

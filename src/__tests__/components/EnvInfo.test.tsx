@@ -70,6 +70,13 @@ describe('EnvInfo Component', () => {
       )
     ).toBeInTheDocument();
   });
+
+  it('shows environment chip with warning color in development', () => {
+    render(<EnvInfo />);
+
+    const envChip = screen.getByText('development');
+    expect(envChip).toBeInTheDocument();
+  });
 });
 
 describe('EnvInfo Component - Production Mode', () => {

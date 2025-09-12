@@ -175,4 +175,26 @@ describe('Layout Metadata', () => {
       'A modern Next.js app with Material-UI and TypeScript'
     );
   });
+
+  it('exports correct viewport configuration', () => {
+    const { viewport } = require('../../app/layout');
+
+    expect(viewport).toEqual({
+      width: 'device-width',
+      initialScale: 1,
+      maximumScale: 1,
+      userScalable: false,
+      themeColor: '#1976d2',
+    });
+  });
+
+  it('has required viewport properties', () => {
+    const { viewport } = require('../../app/layout');
+
+    expect(viewport).toHaveProperty('width');
+    expect(viewport).toHaveProperty('initialScale');
+    expect(viewport).toHaveProperty('maximumScale');
+    expect(viewport).toHaveProperty('userScalable');
+    expect(viewport).toHaveProperty('themeColor');
+  });
 });
