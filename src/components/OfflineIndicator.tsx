@@ -107,10 +107,10 @@ export default function OfflineIndicator({
       <Box
         sx={{
           position: 'fixed',
-          top: 0,
+          top: { xs: 56, sm: 64 }, // Responsive: 56px on mobile, 64px on desktop
           left: 0,
           right: 0,
-          zIndex: 9999,
+          zIndex: 1200, // Below AppBar (1300) but above other content
           p: 1,
         }}
       >
