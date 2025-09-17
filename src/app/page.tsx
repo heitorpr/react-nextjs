@@ -16,6 +16,7 @@ import PWAInstaller from '@/components/PWAInstaller';
 import EnvInfo from '@/components/EnvInfo';
 import { PageErrorBoundary } from '@/components/PageErrorBoundary';
 import { ComponentErrorBoundary } from '@/components/ComponentErrorBoundary';
+import OfflineIndicator from '@/components/OfflineIndicator';
 
 export default function Home(): React.JSX.Element {
   const handleClick = (): void => {
@@ -34,6 +35,8 @@ export default function Home(): React.JSX.Element {
           </IconButton>
         </Toolbar>
       </AppBar>
+
+      <OfflineIndicator />
 
       <Container maxWidth='md' sx={{ mt: 4, mb: 4 }}>
         <Box
