@@ -16,6 +16,41 @@ A modern React Next.js application built with TypeScript and Material-UI.
 - 🔧 **Environment Variables** with type safety and validation
 - 📱 **PWA Support** with offline capabilities
 - ⚡ **Service Worker** with stale-while-revalidate strategy
+- 🎯 **Absolute Imports** for cleaner import paths
+
+## Absolute Imports
+
+This project is configured with absolute imports to make your import paths cleaner and more maintainable. Instead of using relative paths like `../../../components/Button`, you can use absolute paths like `@/components/Button`.
+
+### Available Aliases
+
+- `@/*` - Points to `./src/*`
+- `@/components/*` - Points to `./src/components/*`
+- `@/lib/*` - Points to `./src/lib/*`
+- `@/app/*` - Points to `./src/app/*`
+- `@/types/*` - Points to `./src/types/*`
+- `@/__tests__/*` - Points to `./src/__tests__/*`
+
+### Examples
+
+```typescript
+// ❌ Before (relative imports)
+import { Button } from '../../../components/ui/Button';
+import { validateEnv } from '../../lib/env';
+import { User } from '../../../types/user';
+
+// ✅ After (absolute imports)
+import { Button } from '@/components/ui/Button';
+import { validateEnv } from '@/lib/env';
+import { User } from '@/types/user';
+```
+
+### Benefits
+
+- **Cleaner code**: No more `../../../` chains
+- **Easier refactoring**: Moving files doesn't break imports
+- **Better IDE support**: Autocomplete and go-to-definition work better
+- **Consistent paths**: Same import path regardless of file location
 
 ## Prerequisites
 

@@ -15,7 +15,7 @@ import {
   Person as PersonIcon,
   Refresh as RefreshIcon,
 } from '@mui/icons-material';
-import { AsyncWrapper } from '../ui';
+import { AsyncWrapper } from '@/components/ui';
 
 interface User {
   id: number;

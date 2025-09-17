@@ -10,7 +10,7 @@ import {
   Divider,
 } from '@mui/material';
 import { Info as InfoIcon, BugReport as BugIcon } from '@mui/icons-material';
-import { clientEnv, getEnvInfo } from '../lib/env';
+import { clientEnv, getEnvInfo } from '@/lib/env';
 
 export default function EnvInfo(): React.JSX.Element {
   const envInfo = getEnvInfo();

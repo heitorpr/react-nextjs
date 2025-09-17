@@ -20,7 +20,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
 } from '@mui/icons-material';
-import { AsyncWrapper } from '../ui';
+import { AsyncWrapper } from '@/components/ui';
 
 interface Product {
   id: number;

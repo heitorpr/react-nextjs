@@ -12,10 +12,10 @@ import {
   IconButton,
 } from '@mui/material';
 import { Favorite, GitHub } from '@mui/icons-material';
-import PWAInstaller from '../components/PWAInstaller';
-import EnvInfo from '../components/EnvInfo';
-import { PageErrorBoundary } from '../components/PageErrorBoundary';
-import { ComponentErrorBoundary } from '../components/ComponentErrorBoundary';
+import PWAInstaller from '@/components/PWAInstaller';
+import EnvInfo from '@/components/EnvInfo';
+import { PageErrorBoundary } from '@/components/PageErrorBoundary';
+import { ComponentErrorBoundary } from '@/components/ComponentErrorBoundary';
 
 export default function Home(): React.JSX.Element {
   const handleClick = (): void => {
