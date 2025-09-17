@@ -15,7 +15,7 @@ import {
   Person as PersonIcon,
   Refresh as RefreshIcon,
 } from '@mui/icons-material';
-import { AsyncWrapper, LoadingSkeleton } from '../ui';
+import { AsyncWrapper } from '../ui';
 
 interface User {
   id: number;
@@ -124,7 +124,10 @@ export const UserList: React.FC = () => {
         emptyTitle='No users found'
         emptyDescription='There are no users to display at the moment.'
         emptyActionLabel='Add User'
-        onEmptyAction={() => console.log('Add user clicked')}
+        onEmptyAction={() => {
+          // eslint-disable-next-line no-console
+          console.log('Add user clicked');
+        }}
         onRetry={loadUsers}
         loadingVariant='skeleton'
         minHeight={300}

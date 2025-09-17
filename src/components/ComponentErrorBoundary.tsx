@@ -1,7 +1,7 @@
 'use client';
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { Alert, AlertTitle, Box, Button, Typography } from '@mui/material';
+import { Alert, AlertTitle, Button, Typography } from '@mui/material';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
 
 interface Props {

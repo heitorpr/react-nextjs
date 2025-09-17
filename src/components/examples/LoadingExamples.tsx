@@ -8,8 +8,6 @@ import {
   Grid,
   Card,
   CardContent,
-  Paper,
-  Divider,
 } from '@mui/material';
 import {
   LoadingSpinner,
@@ -174,7 +172,10 @@ export const LoadingExamples: React.FC = () => {
                     title='Create your first item'
                     description='Get started by creating your first item.'
                     actionLabel='Create Item'
-                    onAction={() => console.log('Create item clicked')}
+                    onAction={() => {
+                      // eslint-disable-next-line no-console
+                      console.log('Create item clicked');
+                    }}
                     variant='create'
                   />
                 )}

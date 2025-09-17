@@ -6,7 +6,6 @@ import {
   Skeleton,
   Card,
   CardContent,
-  Typography,
   SxProps,
   Theme,
 } from '@mui/material';

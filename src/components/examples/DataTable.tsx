@@ -20,7 +20,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
 } from '@mui/icons-material';
-import { AsyncWrapper, TableSkeleton } from '../ui';
+import { AsyncWrapper } from '../ui';
 
 interface Product {
   id: number;
@@ -149,7 +149,10 @@ export const DataTable: React.FC = () => {
         emptyTitle='No products found'
         emptyDescription='There are no products to display. Add some products to get started.'
         emptyActionLabel='Add Product'
-        onEmptyAction={() => console.log('Add product clicked')}
+        onEmptyAction={() => {
+          // eslint-disable-next-line no-console
+          console.log('Add product clicked');
+        }}
         onRetry={loadProducts}
         loadingVariant='skeleton'
         minHeight={400}

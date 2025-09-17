@@ -32,6 +32,7 @@ sizes.forEach(size => {
 });
 
 // Create a simple PNG placeholder (base64 encoded 1x1 transparent pixel)
+// eslint-disable-next-line no-unused-vars
 const pngPlaceholder = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
   'base64'

@@ -1,4 +1,6 @@
-const withPWA = require('next-pwa')({
+import withPWA from 'next-pwa';
+
+const withPWAConfig = withPWA({
   dest: 'public',
   register: true,
   skipWaiting: true,
@@ -22,4 +24,4 @@ const nextConfig = {
   // App Router is enabled by default in Next.js 13+
 };
 
-module.exports = withPWA(nextConfig);
+export default withPWAConfig(nextConfig);

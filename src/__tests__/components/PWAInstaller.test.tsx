@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import PWAInstaller from '../../components/PWAInstaller';
 
@@ -254,8 +248,8 @@ describe('PWAInstaller', () => {
   });
 
   it('handles install click when no deferred prompt exists', async () => {
-    const user = userEvent.setup();
-    const mockPrompt = jest.fn();
+    const _user = userEvent.setup();
+    const _mockPrompt = jest.fn();
 
     render(<PWAInstaller />);
 
@@ -266,7 +260,7 @@ describe('PWAInstaller', () => {
   });
 
   it('handles install click when deferredPrompt is null', async () => {
-    const user = userEvent.setup();
+    const _user = userEvent.setup();
 
     // Create a component instance and manually trigger the install click
     // when deferredPrompt is null (this covers line 55)

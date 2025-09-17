@@ -4,7 +4,13 @@ import UserList from '../../../components/examples/UserList';
 
 // Mock the UI components
 jest.mock('../../../components/ui', () => ({
-  AsyncWrapper: ({ children, loading, error, empty, onRetry }: any) => {
+  AsyncWrapper: ({
+    children,
+    loading,
+    error,
+    empty,
+    onRetry: _onRetry,
+  }: any) => {
     if (loading) return <div data-testid='loading'>Loading...</div>;
     if (error) return <div data-testid='error'>Error: {error.message}</div>;
     if (empty) return <div data-testid='empty'>No data</div>;
@@ -158,7 +164,10 @@ describe('UserList', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
     // Test the callback function directly to cover line 127
-    const mockCallback = () => console.log('Add user clicked');
+    const mockCallback = () => {
+      // eslint-disable-next-line no-console
+      console.log('Add user clicked');
+    };
     mockCallback();
 
     expect(consoleSpy).toHaveBeenCalledWith('Add user clicked');

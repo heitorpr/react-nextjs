@@ -4,7 +4,13 @@ import DataTable from '../../../components/examples/DataTable';
 
 // Mock the UI components
 jest.mock('../../../components/ui', () => ({
-  AsyncWrapper: ({ children, loading, error, empty, onRetry }: any) => {
+  AsyncWrapper: ({
+    children,
+    loading,
+    error,
+    empty,
+    onRetry: _onRetry,
+  }: any) => {
     if (loading) return <div data-testid='loading'>Loading...</div>;
     if (error) return <div data-testid='error'>Error: {error.message}</div>;
     if (empty) return <div data-testid='empty'>No data</div>;
@@ -206,7 +212,10 @@ describe('DataTable', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
     // Test the callback function directly to cover line 152
-    const mockCallback = () => console.log('Add product clicked');
+    const mockCallback = () => {
+      // eslint-disable-next-line no-console
+      console.log('Add product clicked');
+    };
     mockCallback();
 
     expect(consoleSpy).toHaveBeenCalledWith('Add product clicked');

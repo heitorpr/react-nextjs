@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import LoadingExamples from '../../../components/examples/LoadingExamples';
 
 // Mock the UI components
@@ -237,7 +237,10 @@ describe('LoadingExamples', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
     // Test the callback function directly to cover line 177
-    const mockCallback = () => console.log('Create item clicked');
+    const mockCallback = () => {
+      // eslint-disable-next-line no-console
+      console.log('Create item clicked');
+    };
     mockCallback();
 
     expect(consoleSpy).toHaveBeenCalledWith('Create item clicked');

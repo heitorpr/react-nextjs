@@ -18,9 +18,9 @@ export class ErrorReportingService {
   private isEnabled: boolean;
   private serviceUrl?: string;
 
-  constructor() {
-    this.isEnabled = process.env.NODE_ENV === 'production';
-    this.serviceUrl = process.env.NEXT_PUBLIC_ERROR_REPORTING_URL;
+  constructor(nodeEnv?: string, serviceUrl?: string) {
+    this.isEnabled = (nodeEnv || process.env.NODE_ENV) === 'production';
+    this.serviceUrl = serviceUrl || process.env.NEXT_PUBLIC_ERROR_REPORTING_URL;
   }
 
   /**

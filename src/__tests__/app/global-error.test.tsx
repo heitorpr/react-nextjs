@@ -11,7 +11,7 @@ jest.mock('next/navigation', () => ({
 }));
 
 // Mock window.location.href
-const originalLocation = window.location;
+const _originalLocation = window.location;
 delete (window as any).location;
 (window as any).location = { href: 'http://localhost/' };
 
