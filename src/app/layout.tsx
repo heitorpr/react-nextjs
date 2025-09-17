@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
+import OfflineIndicator from '@/components/OfflineIndicator';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -46,7 +47,10 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <GlobalErrorBoundary>
-          <Providers>{children}</Providers>
+          <Providers>
+            <OfflineIndicator />
+            {children}
+          </Providers>
         </GlobalErrorBoundary>
       </body>
     </html>

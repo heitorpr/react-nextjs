@@ -54,6 +54,7 @@ export default [
         URLSearchParams: 'readonly',
         __dirname: 'readonly',
         Buffer: 'readonly',
+        navigator: 'readonly',
       },
     },
     plugins: {
@@ -108,6 +109,7 @@ export default [
         URLSearchParams: 'readonly',
         __dirname: 'readonly',
         Buffer: 'readonly',
+        navigator: 'readonly',
       },
     },
     plugins: {
