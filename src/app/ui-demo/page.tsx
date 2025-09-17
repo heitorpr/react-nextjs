@@ -19,6 +19,7 @@ import {
   DataTable,
   LoadingExamples,
 } from '../../components/examples';
+import OfflineIndicator from '@/components/OfflineIndicator';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -71,6 +72,8 @@ export default function UIDemoPage(): React.JSX.Element {
           </Typography>
         </Toolbar>
       </AppBar>
+
+      <OfflineIndicator />
 
       <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
         <Paper sx={{ width: '100%' }}>

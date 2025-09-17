@@ -103,7 +103,7 @@ export default function OfflineIndicator({
   const isOffline = !isOnline;
 
   return (
-    <Slide direction='down' in={showIndicator} mountOnEnter unmountOnExit>
+    <Slide direction='up' in={showIndicator} mountOnEnter unmountOnExit>
       <Box
         sx={{
           width: '100%',
