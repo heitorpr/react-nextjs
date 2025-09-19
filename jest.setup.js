@@ -1,5 +1,8 @@
 import '@testing-library/jest-dom';
 
+// Polyfill fetch for Node.js environment
+global.fetch = jest.fn();
+
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
   useRouter() {
@@ -62,3 +65,15 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 });
+
+// Mock NextAuth to prevent fetch errors
+jest.mock('next-auth/react', () => ({
+  SessionProvider: ({ children }) => children,
+  useSession: () => ({
+    data: null,
+    status: 'unauthenticated',
+  }),
+  signIn: jest.fn(),
+  signOut: jest.fn(),
+  getSession: jest.fn(() => Promise.resolve(null)),
+}));

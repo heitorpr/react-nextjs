@@ -1,50 +1,64 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import Home from '../../app/page';
+import React from 'react';
+import { renderWithProviders, screen } from '@/__tests__/utils/test-utils';
+import Dashboard from '@/app/page';
 
 describe('App Integration Tests', () => {
   it('renders the complete app with all components', () => {
-    render(<Home />);
+    renderWithProviders(<Dashboard />);
 
-    // Check main structure
-    expect(screen.getByText('Hello World App')).toBeInTheDocument();
-    expect(screen.getByText('Hello World!')).toBeInTheDocument();
-    expect(screen.getByText('Features')).toBeInTheDocument();
+    // Check main heading
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(screen.getByText('Operations Dashboard')).toBeInTheDocument();
 
-    // Check interactive elements
-    const clickButton = screen.getByRole('button', { name: /click me/i });
-    const githubButton = screen.getByTestId('GitHubIcon');
+    // Check welcome message
+    expect(screen.getByText(/Welcome back, Test User!/)).toBeInTheDocument();
 
-    expect(clickButton).toBeInTheDocument();
-    expect(githubButton).toBeInTheDocument();
+    // Check info alert
+    expect(
+      screen.getByText(
+        /This is the main dashboard for the operations backoffice system/
+      )
+    ).toBeInTheDocument();
+
+    // Check function cards
+    expect(screen.getByText('Hello World')).toBeInTheDocument();
+    expect(screen.getByText('Operations')).toBeInTheDocument();
+    expect(screen.getByText('Administration')).toBeInTheDocument();
+
+    // Check system information
+    expect(screen.getByText('System Information')).toBeInTheDocument();
   });
 
   it('handles user interactions correctly', () => {
-    const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
+    renderWithProviders(<Dashboard />);
 
-    render(<Home />);
+    // Check that access buttons are interactive
+    const accessButtons = screen.getAllByText('Access Function');
+    expect(accessButtons).toHaveLength(3);
 
-    const clickButton = screen.getByRole('button', { name: /click me/i });
-    fireEvent.click(clickButton);
-
-    expect(mockAlert).toHaveBeenCalledWith('Hello from Material-UI!');
-
-    mockAlert.mockRestore();
+    accessButtons.forEach(button => {
+      expect(button).not.toBeDisabled();
+    });
   });
 
-  it('displays all feature items correctly', () => {
-    render(<Home />);
+  it('displays all function cards correctly', () => {
+    renderWithProviders(<Dashboard />);
 
-    const expectedFeatures = [
-      '✅ Next.js 15 with App Router',
-      '✅ TypeScript for type safety',
-      '✅ Material-UI for beautiful components',
-      '✅ Emotion for styling',
-      '✅ Modern React 19 features',
-    ];
+    const expectedFunctions = ['Hello World', 'Operations', 'Administration'];
 
-    expectedFeatures.forEach(feature => {
-      const featureElement = screen.getByText(feature);
-      expect(featureElement).toBeInTheDocument();
+    expectedFunctions.forEach(functionName => {
+      expect(screen.getByText(functionName)).toBeInTheDocument();
     });
+
+    // Check descriptions
+    expect(
+      screen.getByText('Sample function to demonstrate system behavior')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Operational functions and tools')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('User and system administration')
+    ).toBeInTheDocument();
   });
 });

@@ -15,6 +15,29 @@ const __dirname = path.dirname(__filename);
 
 export default [
   js.configs.recommended,
+  // Next.js configuration
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    plugins: {
+      '@next/next': nextPlugin,
+    },
+    rules: {
+      '@next/next/no-img-element': 'error',
+      '@next/next/no-html-link-for-pages': 'error',
+      '@next/next/no-page-custom-font': 'error',
+      '@next/next/no-sync-scripts': 'error',
+      '@next/next/no-title-in-document-head': 'error',
+      '@next/next/no-unwanted-polyfillio': 'error',
+      '@next/next/no-css-tags': 'error',
+      '@next/next/no-head-element': 'error',
+      '@next/next/no-head-import-in-document': 'error',
+      '@next/next/no-script-component-in-head': 'error',
+      '@next/next/no-styled-jsx-in-document': 'error',
+      '@next/next/no-typos': 'error',
+      '@next/next/no-document-import-in-page': 'error',
+      '@next/next/no-duplicate-head': 'error',
+    },
+  },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -59,11 +82,9 @@ export default [
     },
     plugins: {
       prettier,
-      '@next/next': nextPlugin,
     },
     rules: {
       'prettier/prettier': 'error',
-      '@next/next/no-img-element': 'error',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },
@@ -118,7 +139,6 @@ export default [
       'react-hooks': reactHooks,
       'jsx-a11y': jsxA11y,
       prettier,
-      '@next/next': nextPlugin,
       import: importPlugin,
     },
     rules: {
@@ -133,24 +153,6 @@ export default [
       'no-var': 'error',
       'object-shorthand': 'error',
       'prefer-template': 'error',
-      // Next.js specific rules
-      '@next/next/no-html-link-for-pages': 'error',
-      '@next/next/no-img-element': 'error',
-      '@next/next/no-page-custom-font': 'error',
-      '@next/next/no-sync-scripts': 'error',
-      '@next/next/no-title-in-document-head': 'error',
-      '@next/next/no-unwanted-polyfillio': 'error',
-      '@next/next/no-css-tags': 'error',
-      '@next/next/no-head-element': 'error',
-      '@next/next/no-head-import-in-document': 'error',
-      '@next/next/no-script-component-in-head': 'error',
-      '@next/next/no-styled-jsx-in-document': 'error',
-      '@next/next/no-typos': 'error',
-      '@next/next/no-document-import-in-page': 'error',
-      '@next/next/no-duplicate-head': 'error',
-      '@next/next/no-head-import-in-document': 'error',
-      '@next/next/no-script-component-in-head': 'error',
-      '@next/next/no-styled-jsx-in-document': 'error',
       // Import rules
       'import/no-unresolved': 'error',
     },
@@ -198,18 +200,52 @@ export default [
   },
   {
     ignores: [
+      // Dependencies
       'node_modules/**',
+
+      // Production builds
       '.next/**',
       'out/**',
       'build/**',
       'dist/**',
+
+      // Coverage reports
       'coverage/**',
-      '*.config.js',
-      '*.config.ts',
+
+      // Generated files
+      '*.tsbuildinfo',
+      '.swc/**',
+
+      // PWA generated files
       'public/sw.js',
       'public/workbox-*.js',
+      'public/worker-*.js',
       'public/sw.js.map',
       'public/workbox-*.js.map',
+      'public/worker-*.js.map',
+
+      // PWA precache files
+      'public/precache-manifest.*.js',
+      'public/precache-manifest.*.json',
+
+      // PWA fallback files (generated)
+      'public/fallback-*.html',
+      'public/offline-*.html',
+
+      // IDE files
+      '.vscode/**',
+      '.idea/**',
+
+      // OS files
+      '.DS_Store',
+      'Thumbs.db',
+
+      // Git
+      '.git/**',
+
+      // Config files
+      '*.config.js',
+      '*.config.ts',
       'next-env.d.ts',
     ],
   },

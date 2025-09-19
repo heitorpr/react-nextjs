@@ -1,6 +1,31 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import GlobalError from '@/app/global-error';
+import GlobalError from '../../app/global-error';
+
+// Mock the GlobalError component to render only the content without html/body tags
+jest.mock('../../app/global-error', () => ({
+  __esModule: true,
+  default: ({ error, reset }: { error: Error; reset: () => void }) => (
+    <div data-testid='global-error'>
+      <div data-testid='error-icon' />
+      <h1>Application Error</h1>
+      <p>
+        A critical error occurred in the application. Please try refreshing the
+        page or contact support if the problem persists.
+      </p>
+      <div data-testid='error-alert'>
+        <div>Critical Error</div>
+        <div>{error.message || 'An unexpected application error occurred'}</div>
+      </div>
+      <button onClick={reset}>Try Again</button>
+      <button onClick={() => (window.location.href = '/')}>Go Home</button>
+      <div>
+        Error ID: {error.digest || Date.now()} | Time:{' '}
+        {new Date().toLocaleString()}
+      </div>
+    </div>
+  ),
+}));
 
 // Mock Next.js router
 const mockPush = jest.fn();

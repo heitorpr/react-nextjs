@@ -4,23 +4,19 @@
 
 // Client-side environment variables (prefixed with NEXT_PUBLIC_)
 export const clientEnv = {
-  appName: process.env.NEXT_PUBLIC_APP_NAME || 'Hello World Next.js App',
+  appName: process.env.NEXT_PUBLIC_APP_NAME || 'Operations Backoffice',
   appVersion: process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0',
   appUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-  apiUrl:
-    process.env.NEXT_PUBLIC_API_URL || 'https://jsonplaceholder.typicode.com',
-  googleAnalyticsId: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID,
-  sentryDsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  enableAnalytics: process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === 'true',
-  enablePWA: process.env.NEXT_PUBLIC_ENABLE_PWA === 'true',
-  enableDebug: process.env.NEXT_PUBLIC_ENABLE_DEBUG === 'true',
 } as const;
 
 // Server-side environment variables (not prefixed)
 export const serverEnv = {
-  apiSecretKey: process.env.API_SECRET_KEY,
-  databaseUrl: process.env.DATABASE_URL,
   nodeEnv: process.env.NODE_ENV || 'development',
+  // Authentication
+  nextAuthUrl: process.env.NEXTAUTH_URL,
+  nextAuthSecret: process.env.NEXTAUTH_SECRET,
+  googleClientId: process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
 } as const;
 
 // Environment validation
@@ -29,7 +25,12 @@ export function validateEnv() {
     'NEXT_PUBLIC_APP_NAME',
     'NEXT_PUBLIC_APP_URL',
   ] as const;
-  const requiredServerVars = ['API_SECRET_KEY'] as const;
+  const requiredServerVars = [
+    'NEXTAUTH_URL',
+    'NEXTAUTH_SECRET',
+    'GOOGLE_CLIENT_ID',
+    'GOOGLE_CLIENT_SECRET',
+  ] as const;
 
   const missingClientVars = requiredClientVars.filter(
     varName => !process.env[varName]
@@ -68,9 +69,7 @@ export function getEnvInfo() {
     appName: clientEnv.appName,
     appVersion: clientEnv.appVersion,
     features: {
-      analytics: clientEnv.enableAnalytics,
-      pwa: clientEnv.enablePWA,
-      debug: clientEnv.enableDebug,
+      // Features can be added here when needed
     },
   };
 }

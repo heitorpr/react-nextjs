@@ -100,7 +100,7 @@ describe('OfflineIndicator', () => {
     expect(mockOnDismiss).toHaveBeenCalledTimes(1);
   });
 
-  it('should hide indicator after dismiss', () => {
+  it('should hide indicator after dismiss', async () => {
     mockUseOnlineStatus.mockReturnValue(false);
 
     render(<OfflineIndicator dismissible={true} />);
@@ -108,12 +108,17 @@ describe('OfflineIndicator', () => {
     expect(screen.getByText('You are offline')).toBeInTheDocument();
 
     const dismissButton = screen.getByLabelText('dismiss');
-    dismissButton.click();
 
-    expect(screen.queryByText('You are offline')).not.toBeInTheDocument();
+    await act(async () => {
+      dismissButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('You are offline')).not.toBeInTheDocument();
+    });
   });
 
-  it('should reset dismissed state when going offline after being online', () => {
+  it('should reset dismissed state when going offline after being online', async () => {
     const { rerender } = render(<OfflineIndicator dismissible={true} />);
 
     // Start offline
@@ -124,9 +129,14 @@ describe('OfflineIndicator', () => {
 
     // Dismiss the indicator
     const dismissButton = screen.getByLabelText('dismiss');
-    dismissButton.click();
 
-    expect(screen.queryByText('You are offline')).not.toBeInTheDocument();
+    await act(async () => {
+      dismissButton.click();
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('You are offline')).not.toBeInTheDocument();
+    });
 
     // Go online
     mockUseOnlineStatus.mockReturnValue(true);

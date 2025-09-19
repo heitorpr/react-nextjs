@@ -1,27 +1,32 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
-import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
+import { AuthProvider } from '@/components/AuthProvider';
+import { UnifiedErrorBoundary } from '@/components/errors/UnifiedErrorBoundary';
+import Navigation from '@/components/Navigation';
+import { Box, CssBaseline } from '@mui/material';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Hello World Next.js App',
-  description: 'A modern Next.js app with Material-UI and TypeScript',
+  title: 'Operations Backoffice',
+  description:
+    'Operations team backoffice system with authentication and role-based access',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'HelloWorld',
+    title: 'Backoffice',
   },
   formatDetection: {
     telephone: false,
   },
   openGraph: {
     type: 'website',
-    siteName: 'Hello World Next.js App',
-    title: 'Hello World Next.js App',
-    description: 'A modern Next.js app with Material-UI and TypeScript',
+    siteName: 'Operations Backoffice',
+    title: 'Operations Backoffice',
+    description:
+      'Operations team backoffice system with authentication and role-based access',
   },
   icons: {
     icon: '/icons/icon-192x192.png',
@@ -45,9 +50,28 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <GlobalErrorBoundary>
-          <Providers>{children}</Providers>
-        </GlobalErrorBoundary>
+        <CssBaseline />
+        <UnifiedErrorBoundary level='global'>
+          <Providers>
+            <AuthProvider>
+              <Box sx={{ display: 'flex' }}>
+                <Navigation />
+                <Box
+                  component='main'
+                  sx={{
+                    flexGrow: 1,
+                    p: 3,
+                    width: { md: `calc(100% - 240px)` },
+                    ml: { md: '240px' },
+                    mt: '64px', // Account for AppBar height
+                  }}
+                >
+                  {children}
+                </Box>
+              </Box>
+            </AuthProvider>
+          </Providers>
+        </UnifiedErrorBoundary>
       </body>
     </html>
   );

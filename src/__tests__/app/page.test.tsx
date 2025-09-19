@@ -1,113 +1,112 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import Home from '../../app/page';
+import React from 'react';
+import {
+  renderWithProviders,
+  screen,
+  fireEvent,
+} from '@/__tests__/utils/test-utils';
+import Dashboard from '@/app/page';
 
-// Mock window.alert
-const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
+// Mock Next.js router
+const mockPush = jest.fn();
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}));
 
-describe('Home Page', () => {
+describe('Dashboard Page', () => {
   beforeEach(() => {
-    mockAlert.mockClear();
+    jest.clearAllMocks();
   });
 
-  afterAll(() => {
-    mockAlert.mockRestore();
-  });
-
-  it('renders the main heading', () => {
-    render(<Home />);
+  it('renders the dashboard heading', () => {
+    renderWithProviders(<Dashboard />);
 
     const heading = screen.getByRole('heading', { level: 1 });
     expect(heading).toBeInTheDocument();
-    expect(heading).toHaveTextContent('Hello World!');
+    expect(heading).toHaveTextContent('Operations Dashboard');
   });
 
-  it('renders the welcome message', () => {
-    render(<Home />);
+  it('renders the welcome message with user name', () => {
+    renderWithProviders(<Dashboard />);
 
-    const welcomeMessage = screen.getByText(
-      /Welcome to your modern Next.js app/
-    );
+    const welcomeMessage = screen.getByText(/Welcome back, Test User!/);
     expect(welcomeMessage).toBeInTheDocument();
   });
 
-  it('renders the app bar with title', () => {
-    render(<Home />);
+  it('renders the info alert', () => {
+    renderWithProviders(<Dashboard />);
 
-    const appBarTitle = screen.getByText('Hello World App');
-    expect(appBarTitle).toBeInTheDocument();
+    const alert = screen.getByText(
+      /This is the main dashboard for the operations backoffice system/
+    );
+    expect(alert).toBeInTheDocument();
   });
 
-  it('renders the GitHub icon button', () => {
-    render(<Home />);
+  it('renders the Hello World function card', () => {
+    renderWithProviders(<Dashboard />);
 
-    const githubButton = screen.getByTestId('GitHubIcon');
-    expect(githubButton).toBeInTheDocument();
+    const helloWorldCard = screen.getByText('Hello World');
+    expect(helloWorldCard).toBeInTheDocument();
+
+    const helloWorldDescription = screen.getByText(
+      'Sample function to demonstrate system behavior'
+    );
+    expect(helloWorldDescription).toBeInTheDocument();
   });
 
-  it('renders the click me button', () => {
-    render(<Home />);
+  it('renders the Operations card', () => {
+    renderWithProviders(<Dashboard />);
 
-    const clickButton = screen.getByRole('button', { name: /click me/i });
-    expect(clickButton).toBeInTheDocument();
+    const operationsCard = screen.getByText('Operations');
+    expect(operationsCard).toBeInTheDocument();
+
+    const operationsDescription = screen.getByText(
+      'Operational functions and tools'
+    );
+    expect(operationsDescription).toBeInTheDocument();
   });
 
-  it('shows alert when click me button is clicked', () => {
-    render(<Home />);
+  it('renders the Administration card', () => {
+    renderWithProviders(<Dashboard />);
 
-    const clickButton = screen.getByRole('button', { name: /click me/i });
-    fireEvent.click(clickButton);
+    const adminCard = screen.getByText('Administration');
+    expect(adminCard).toBeInTheDocument();
 
-    expect(mockAlert).toHaveBeenCalledWith('Hello from Material-UI!');
+    const adminDescription = screen.getByText('User and system administration');
+    expect(adminDescription).toBeInTheDocument();
   });
 
-  it('renders the features section', () => {
-    render(<Home />);
+  it('navigates to Hello World function when clicked', () => {
+    renderWithProviders(<Dashboard />);
 
-    const featuresHeading = screen.getByRole('heading', { level: 2 });
-    expect(featuresHeading).toHaveTextContent('Features');
+    // Find the Hello World card specifically
+    const helloWorldCard = screen
+      .getByText('Hello World')
+      .closest('.MuiCard-root');
+    const helloWorldButton = helloWorldCard?.querySelector('button');
+    fireEvent.click(helloWorldButton!);
+
+    expect(mockPush).toHaveBeenCalledWith('/hello');
   });
 
-  it('renders all feature items', () => {
-    render(<Home />);
+  it('renders system information section', () => {
+    renderWithProviders(<Dashboard />);
 
-    const features = [
-      '✅ Next.js 15 with App Router',
-      '✅ TypeScript for type safety',
-      '✅ Material-UI for beautiful components',
-      '✅ Emotion for styling',
-      '✅ Modern React 19 features',
-      '✅ Loading & Error UI components',
-    ];
+    const systemInfoHeading = screen.getByText('System Information');
+    expect(systemInfoHeading).toBeInTheDocument();
 
-    features.forEach(feature => {
-      expect(screen.getByText(feature)).toBeInTheDocument();
-    });
+    const userInfo = screen.getByText(/Test User \(test@company.com\)/);
+    expect(userInfo).toBeInTheDocument();
+
+    const rolesInfo = screen.getByText(/Administrator/);
+    expect(rolesInfo).toBeInTheDocument();
   });
 
-  it('renders the View UI Demo button', () => {
-    render(<Home />);
+  it('shows all quick action cards for admin user', () => {
+    renderWithProviders(<Dashboard />);
 
-    const uiDemoButton = screen.getByRole('button', { name: /view ui demo/i });
-    expect(uiDemoButton).toBeInTheDocument();
-  });
-
-  it('navigates to UI demo when View UI Demo button is clicked', () => {
-    // Since JSDOM doesn't support navigation, let's just test that the button click doesn't throw
-    render(<Home />);
-
-    const uiDemoButton = screen.getByRole('button', { name: /view ui demo/i });
-
-    // Test that clicking the button doesn't throw an error
-    expect(() => {
-      fireEvent.click(uiDemoButton);
-    }).not.toThrow();
-  });
-
-  it('has proper Material-UI theming', () => {
-    render(<Home />);
-
-    // Check if the main container has Material-UI classes
-    const container = document.querySelector('.MuiContainer-root');
-    expect(container).toBeInTheDocument();
+    const accessButtons = screen.getAllByText('Access Function');
+    expect(accessButtons).toHaveLength(3); // Hello World, Operations, Administration
   });
 });

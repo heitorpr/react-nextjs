@@ -2,134 +2,118 @@
 
 import React from 'react';
 import {
-  Container,
   Typography,
   Box,
   Paper,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
   Button,
-  AppBar,
-  Toolbar,
-  IconButton,
+  Alert,
 } from '@mui/material';
-import { Favorite, GitHub } from '@mui/icons-material';
-import PWAInstaller from '@/components/PWAInstaller';
-import EnvInfo from '@/components/EnvInfo';
-import { PageErrorBoundary } from '@/components/PageErrorBoundary';
-import { ComponentErrorBoundary } from '@/components/ComponentErrorBoundary';
-import OfflineIndicator from '@/components/OfflineIndicator';
+import {
+  Settings as SettingsIcon,
+  People as PeopleIcon,
+  Home as HomeIcon,
+} from '@mui/icons-material';
+import { useDashboard } from '@/hooks/useDashboard';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 
-export default function Home(): React.JSX.Element {
-  const handleClick = (): void => {
-    alert('Hello from Material-UI!');
+export default function Dashboard(): React.JSX.Element {
+  const { user, navigateToFunction, getAvailableActions, getSystemInfo } =
+    useDashboard();
+
+  // Get icon component for action
+  const getActionIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Home':
+        return <HomeIcon />;
+      case 'Settings':
+        return <SettingsIcon />;
+      case 'People':
+        return <PeopleIcon />;
+      default:
+        return <HomeIcon />;
+    }
   };
 
+  const availableActions = getAvailableActions();
+  const systemInfo = getSystemInfo();
+
   return (
-    <PageErrorBoundary pageName='Home'>
-      <AppBar position='static'>
-        <Toolbar>
-          <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-            Hello World App
-          </Typography>
-          <IconButton color='inherit'>
-            <GitHub />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+    <DashboardLayout
+      title='Operations Dashboard'
+      subtitle={`Welcome back, ${systemInfo.user}! Here's an overview of available functions.`}
+    >
+      <Alert severity='info' sx={{ mb: 4 }}>
+        This is the main dashboard for the operations backoffice system.
+        Available functions are shown based on your role and permissions.
+      </Alert>
 
-      <OfflineIndicator />
-
-      <Container maxWidth='md' sx={{ mt: 4, mb: 4 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 3,
-          }}
-        >
-          <Paper
-            elevation={3}
-            sx={{
-              p: 4,
-              textAlign: 'center',
-              backgroundColor: 'primary.light',
-              color: 'white',
-            }}
-          >
-            <Typography variant='h2' component='h1' gutterBottom>
-              Hello World!
-            </Typography>
-            <Typography variant='h5' component='p' sx={{ mb: 3 }}>
-              Welcome to your modern Next.js app with Material-UI and TypeScript
-            </Typography>
-            <Box
+      <Grid container spacing={3}>
+        {availableActions.map(action => (
+          <Grid item xs={12} sm={6} md={4} key={action.title}>
+            <Card
               sx={{
+                height: '100%',
                 display: 'flex',
-                gap: 2,
-                justifyContent: 'center',
-                flexWrap: 'wrap',
+                flexDirection: 'column',
               }}
             >
-              <Button
-                variant='contained'
-                color='secondary'
-                size='large'
-                startIcon={<Favorite />}
-                onClick={handleClick}
-                sx={{ mt: 2 }}
-              >
-                Click Me!
-              </Button>
-              <Button
-                variant='outlined'
-                color='primary'
-                size='large'
-                onClick={() => (window.location.href = '/ui-demo')}
-                sx={{ mt: 2 }}
-              >
-                View UI Demo
-              </Button>
-            </Box>
-          </Paper>
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  {getActionIcon(action.icon)}
+                  <Typography variant='h6' component='h2' sx={{ ml: 1 }}>
+                    {action.title}
+                  </Typography>
+                </Box>
+                <Typography variant='body2' color='text.secondary'>
+                  {action.description}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button
+                  size='small'
+                  variant='contained'
+                  onClick={() => navigateToFunction(action.path)}
+                >
+                  Access Function
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
 
-          <Paper elevation={2} sx={{ p: 3, width: '100%' }}>
-            <Typography
-              variant='h4'
-              component='h2'
-              gutterBottom
-              color='primary'
-            >
-              Features
+      <Paper elevation={2} sx={{ p: 3, mt: 4 }}>
+        <Typography variant='h6' gutterBottom>
+          System Information
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <Typography variant='body2' color='text.secondary'>
+              <strong>User:</strong> {systemInfo.user} ({user?.email})
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Typography variant='body1'>
-                ✅ Next.js 15 with App Router
-              </Typography>
-              <Typography variant='body1'>
-                ✅ TypeScript for type safety
-              </Typography>
-              <Typography variant='body1'>
-                ✅ Material-UI for beautiful components
-              </Typography>
-              <Typography variant='body1'>✅ Emotion for styling</Typography>
-              <Typography variant='body1'>
-                ✅ Modern React 19 features
-              </Typography>
-              <Typography variant='body1'>
-                ✅ Loading & Error UI components
-              </Typography>
-            </Box>
-          </Paper>
-        </Box>
-      </Container>
-
-      <ComponentErrorBoundary componentName='EnvInfo'>
-        <EnvInfo />
-      </ComponentErrorBoundary>
-
-      <ComponentErrorBoundary componentName='PWAInstaller'>
-        <PWAInstaller />
-      </ComponentErrorBoundary>
-    </PageErrorBoundary>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant='body2' color='text.secondary'>
+              <strong>Roles:</strong> {systemInfo.roles}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant='body2' color='text.secondary'>
+              <strong>App:</strong> {systemInfo.appName} v
+              {systemInfo.appVersion}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant='body2' color='text.secondary'>
+              <strong>Environment:</strong> {systemInfo.environment}
+            </Typography>
+          </Grid>
+        </Grid>
+      </Paper>
+    </DashboardLayout>
   );
 }

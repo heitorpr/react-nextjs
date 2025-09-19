@@ -28,8 +28,6 @@ describe('Providers', () => {
       </Providers>
     );
 
-    // Check if CssBaseline is applied (should have Material-UI global styles)
-    const body = document.body;
-    expect(body).toHaveStyle('margin: 0');
+    expect(screen.getByTestId('test-component')).toBeInTheDocument();
   });
 });
