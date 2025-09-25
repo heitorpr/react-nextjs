@@ -20,25 +20,89 @@ A modern operations management system with a React frontend and Python BFF (Back
 
 ## 🚀 Quick Start
 
-### Frontend Development
+### Unified Development (Recommended)
 
+Run both frontend and backend with a single command:
+
+#### Linux/macOS (with Make)
+```bash
+# Setup everything
+make setup
+
+# Start both services
+make dev
+```
+
+#### Linux/macOS (with Shell Script)
+```bash
+# Setup everything
+./scripts/dev.sh setup
+
+# Start both services
+./scripts/dev.sh dev
+```
+
+#### Windows
+```cmd
+# Setup everything
+dev.bat setup
+
+# Start both services
+dev.bat dev
+```
+
+This will start:
+- **Backend**: http://localhost:8000 (FastAPI with Docker Compose)
+- **Frontend**: http://localhost:3000 (Next.js development server)
+
+### Individual Service Development
+
+#### Frontend Only
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### Backend Development
-
+#### Backend Only
 ```bash
 cd backend
-# Install Python 3.13 and uv first (see backend/SETUP.md)
 uv sync --dev
-cp env.example .env
-uv run python scripts/dev.py
+cp .env.example .env
+docker-compose up --build
 ```
 
-**Note**: See [backend/SETUP.md](backend/SETUP.md) for detailed setup instructions including Python 3.13 and uv installation.
+**Note**: See [backend/SETUP.md](backend/SETUP.md) for detailed setup instructions.
+
+## 🛠️ Development Commands
+
+### Available Commands
+
+#### Linux/macOS (Make)
+```bash
+make help           # Show all available commands
+make setup          # Setup both backend and frontend
+make dev            # Start both services in development mode
+make dev-backend    # Start only backend
+make dev-frontend   # Start only frontend
+make test           # Run tests for both services
+make lint           # Run linting for both services
+make format         # Format code for both services
+make clean          # Clean all build artifacts
+```
+
+#### Windows (Batch)
+```cmd
+dev.bat help           # Show all available commands
+dev.bat setup          # Setup both backend and frontend
+dev.bat dev            # Start both services in development mode
+dev.bat dev-backend    # Start only backend
+dev.bat dev-frontend   # Start only frontend
+dev.bat test           # Run tests for both services
+dev.bat lint           # Run linting for both services
+dev.bat format         # Format code for both services
+dev.bat clean          # Clean all build artifacts
+```
 
 ## 🚀 Deployment
 

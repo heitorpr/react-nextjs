@@ -1,0 +1,231 @@
+# =============================================================================
+# Operations Backoffice - Monorepo .gitignore
+# =============================================================================
+
+# =============================================================================
+# Environment Variables
+# =============================================================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# =============================================================================
+# Frontend (Next.js/React)
+# =============================================================================
+
+# Dependencies
+frontend/node_modules/
+frontend/.pnp
+frontend/.pnp.js
+frontend/.yarn/
+frontend/.yarn-integrity
+
+# Testing
+frontend/coverage/
+frontend/*.lcov
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# TypeScript
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+
+# SWC cache
+frontend/.swc/
+
+# Debug logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+
+# Runtime data
+frontend/pids
+frontend/*.pid
+frontend/*.seed
+frontend/*.pid.lock
+
+# Logs
+frontend/logs
+frontend/*.log
+
+# Optional npm cache directory
+frontend/.npm
+
+# Microbundle cache
+frontend/.rpt2_cache/
+frontend/.rts2_cache_cjs/
+frontend/.rts2_cache_es/
+frontend/.rts2_cache_umd/
+
+# Optional REPL history
+frontend/.node_repl_history
+
+# Output of 'npm pack'
+frontend/*.tgz
+
+# Parcel-bundler cache
+frontend/.cache
+frontend/.parcel-cache
+
+# Storybook build outputs
+frontend/.storybook-out
+
+# Deployment platforms
+frontend/.vercel
+frontend/.netlify
+
+# Turbo
+frontend/.turbo
+
+# Sentry
+frontend/.sentryclirc
+
+# Code quality tools
+frontend/.eslintcache
+frontend/.prettiercache
+frontend/.stylelintcache
+
+# Lint-staged backup files
+frontend/*.orig
+frontend/*.rej
+
+# PWA generated files (next-pwa)
+frontend/public/sw.js
+frontend/public/workbox-*.js
+frontend/public/worker-*.js
+frontend/public/sw.js.map
+frontend/public/workbox-*.js.map
+frontend/public/worker-*.js.map
+
+# PWA precache files
+frontend/public/precache-manifest.*.js
+frontend/public/precache-manifest.*.json
+
+# PWA fallback files (generated)
+frontend/public/fallback-*.html
+frontend/public/offline-*.html
+
+# =============================================================================
+# Backend (Python/FastAPI)
+# =============================================================================
+
+# Python-generated files
+backend/__pycache__/
+backend/*.py[oc]
+backend/build/
+backend/dist/
+backend/wheels/
+backend/*.egg-info/
+
+# Python test files
+backend/.coverage
+backend/coverage.xml
+backend/.pytest_cache/
+backend/htmlcov/
+
+# Virtual environments
+backend/.venv/
+backend/venv/
+
+# ruff files
+backend/.ruff_cache/
+
+# mypy
+backend/.mypy_cache/
+backend/.dmypy.json
+backend/dmypy.json
+
+# pytype
+backend/.pytype/
+
+# Celery
+backend/celerybeat-schedule
+backend/celerybeat.pid
+
+# SageMath parsed files
+backend/*.sage.py
+
+# Spyder project settings
+backend/.spyderproject
+backend/.spyproject
+
+# Rope project settings
+backend/.ropeproject
+
+# mkdocs documentation
+backend/site/
+
+# =============================================================================
+# IDE and Editor Files
+# =============================================================================
+.vscode/
+.vscode-test/
+.idea/
+*.swp
+*.swo
+*~
+
+# =============================================================================
+# OS Generated Files
+# =============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =============================================================================
+# Security
+# =============================================================================
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# =============================================================================
+# Temporary Files
+# =============================================================================
+tmp/
+temp/
+*.tmp
+*.temp
+
+# =============================================================================
+# Docker
+# =============================================================================
+.dockerignore
+
+# =============================================================================
+# Logs
+# =============================================================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =============================================================================
+# Database
+# =============================================================================
+*.db
+*.sqlite
+*.sqlite3
+
+# =============================================================================
+# Backup files
+# =============================================================================
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
