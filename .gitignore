@@ -115,6 +115,9 @@ frontend/public/offline-*.html
 # Backend (Python/FastAPI)
 # =============================================================================
 
+# Makefiles (use root Makefile only)
+backend/Makefile
+
 # Python-generated files
 backend/__pycache__/
 backend/*.py[oc]

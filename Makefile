@@ -61,7 +61,7 @@ dev: ## Start both backend and frontend in development mode
 .PHONY: dev-backend
 dev-backend: ## Start only backend in development mode
 	@echo "$(GREEN)Starting backend...$(NC)"
-	@cd backend && $(MAKE) dev
+	@cd backend && docker-compose up --build
 
 .PHONY: dev-frontend
 dev-frontend: ## Start only frontend in development mode
