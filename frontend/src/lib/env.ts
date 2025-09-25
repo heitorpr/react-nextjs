@@ -7,6 +7,7 @@ export const clientEnv = {
   appName: process.env.NEXT_PUBLIC_APP_NAME || 'Operations Backoffice',
   appVersion: process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0',
   appUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
 } as const;
 
 // Server-side environment variables (not prefixed)
@@ -17,6 +18,8 @@ export const serverEnv = {
   nextAuthSecret: process.env.NEXTAUTH_SECRET,
   googleClientId: process.env.GOOGLE_CLIENT_ID,
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  // Backend API
+  apiUrl: process.env.API_URL,
 } as const;
 
 // Environment validation
