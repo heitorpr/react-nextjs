@@ -1,36 +1,40 @@
-FROM python:3.13-slim
+## ------------------------------- Builder Stage ------------------------------ ##
+FROM python:3.13-bookworm AS builder
+
+RUN apt-get update && apt-get install --no-install-recommends -y \
+        build-essential && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Download the latest installer, install it and then remove it
+ADD https://astral.sh/uv/install.sh /install.sh
+RUN chmod -R 655 /install.sh && /install.sh && rm /install.sh
+
+# Set up the UV environment path correctly
+ENV PATH="/root/.local/bin:${PATH}"
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+COPY ./pyproject.toml .
 
-# Install uv
-RUN pip install uv
+RUN uv sync
 
-# Copy pyproject.toml for dependency resolution
-COPY pyproject.toml .
+## ------------------------------- Production Stage ------------------------------ ##
+FROM python:3.13-slim-bookworm AS production
 
-# Install Python dependencies with uv
-RUN uv pip install --system -e .
+RUN useradd --create-home appuser
+USER appuser
 
-# Copy application code
-COPY app/ ./app/
+WORKDIR /app
 
-# Create non-root user
-RUN useradd --create-home --shell /bin/bash app \
-    && chown -R app:app /app
-USER app
+COPY /src src
+COPY --from=builder /app/.venv .venv
+COPY ./alembic.ini /app/
 
-# Expose port
-EXPOSE 8000
+# Set up environment variables for production
+ENV PATH="/app/.venv/bin:$PATH"
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+# Expose the specified port for FastAPI
+EXPOSE $PORT
 
-# Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start the application with Uvicorn in production mode, using environment variable references
+CMD ["uvicorn", "src.web.main:app", "--log-level", "info", "--host", "0.0.0.0" , "--port", "8000"]

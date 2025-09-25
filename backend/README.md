@@ -1,79 +1,80 @@
-# Operations Backoffice BFF
+# Operations Backoffice Backend
 
-Backend for Frontend (BFF) service built with FastAPI for the Operations Backoffice system.
+FastAPI backend service for the Operations Backoffice system.
 
 ## 🚀 Features
 
-- **FastAPI**: Modern, fast web framework for building APIs
-- **Authentication**: JWT token validation from frontend
-- **Authorization**: Role-based access control
-- **CORS**: Configured for frontend integration
-- **Health Checks**: Built-in health monitoring
-- **Docker**: Containerized for Kubernetes deployment
+- **FastAPI**: Modern, fast web framework with automatic OpenAPI documentation
+- **PostgreSQL**: Async database with SQLAlchemy 2.0 and Alembic migrations
+- **Authentication**: Signature-based request validation
+- **Monitoring**: Prometheus metrics and health checks
+- **Docker**: Fully containerized with Docker Compose
+- **Type Safety**: Full Python type hints with Pydantic
+- **Async Support**: High-performance async/await patterns
 
 ## 📋 API Endpoints
 
-### Authentication Required
-All endpoints require a valid JWT token in the Authorization header.
-
 ### Core Endpoints
 
-- `GET /health` - Health check
-- `GET /api/me` - Get current user info
-- `GET /api/users` - Get all users (Admin only)
-- `GET /api/permissions` - Get all permissions (Admin only)
-- `GET /api/users/{user_id}/permissions` - Get user permissions (Admin only)
-- `PUT /api/users/{user_id}/permissions` - Update user permissions (Admin only)
+- `GET /docs` - Interactive API documentation (Swagger UI)
+- `GET /health` - Health check endpoint
+- `GET /metrics` - Prometheus metrics
+- `GET /api/heroes` - Get all heroes
+- `GET /api/teams` - Get all teams
+- `POST /api/heroes` - Create new hero
+- `POST /api/teams` - Create new team
+
+### Authentication
+All endpoints require signature validation with:
+- `x-signature` header
+- `x-timestamp` header
+- Request body signing
 
 ## 🛠️ Development
 
 ### Prerequisites
 - Python 3.13+
-- [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended) or pip
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended)
+- Docker & Docker Compose
 
-### Setup with uv (Recommended)
+### Setup
 
 ```bash
-# Install uv if you haven't already
-pip install uv
-
-# Install dependencies and create virtual environment
-uv sync --dev
+# Clone and navigate to backend
+cd backend
 
 # Copy environment variables
-cp env.example .env
-
-# Run the development server
-uv run uvicorn app.main:app --reload
-```
-
-### Setup with pip (Alternative)
-
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
+cp .env.example .env
 
 # Install dependencies
-pip install -e .
+uv sync
 
-# Copy environment variables
-cp env.example .env
-
-# Run the development server
-uvicorn app.main:app --reload
+# Start with Docker Compose
+docker-compose up -d --build
 ```
 
 The API will be available at `http://localhost:8000`
 
-### API Documentation
+### Environment Variables
 
-Visit `http://localhost:8000/docs` for interactive API documentation.
+```env
+# Database Configuration
+APP_DB_USER=postgres
+APP_DB_NAME=operations_backoffice_dev
+APP_DB_HOST=db
+APP_DB_PORT=5432
+APP_DB_PASSWORD=password
+APP_DB_POOL_SIZE=5
+
+# API Configuration
+APP_TIMESTAMP_SIGNING_THRESHOLD=120000
+APP_SECRET_KEY=your-secret-key-here
+
+# Application Configuration
+APP_DEBUG=true
+APP_NAME=operations_backoffice_backend
+APP_NAMESPACE=operations
+```
 
 ## 🧪 Testing
 
@@ -82,106 +83,119 @@ Visit `http://localhost:8000/docs` for interactive API documentation.
 uv run pytest
 
 # Run tests with coverage
-uv run pytest --cov=app
+uv run pytest --cov=src --cov-report=html
 
 # Run linting
-uv run flake8 app/
-uv run black app/
-uv run isort app/
+uv run ruff check .
 
-# Type checking
-uv run mypy app/
+# Fix linting issues
+uv run ruff check . --fix
 
 # Format code
-uv run black app/
-uv run isort app/
+uv run ruff format .
 ```
 
-## 🐳 Docker
+## 🚀 Deployment
 
-### Build Image
+### Docker Compose (Development)
 
 ```bash
-docker build -t operations-backoffice-bff .
+# Start all services
+docker-compose up -d --build
+
+# Start with monitoring (Prometheus, Grafana)
+docker-compose --profile debug up -d --build
+
+# Stop services
+docker-compose down
 ```
 
-### Run Container
+### Database Migrations
 
 ```bash
-docker run -p 8000:8000 operations-backoffice-bff
+# Run migrations
+docker-compose exec app alembic upgrade head
+
+# Create new migration
+docker-compose exec app alembic revision --autogenerate -m "description"
+
+# Check migration status
+docker-compose exec app alembic current
 ```
-
-## ☸️ Kubernetes Deployment
-
-### Deploy with ArgoCD
-
-1. Apply the ArgoCD application:
-```bash
-kubectl apply -f k8s/argo-application.yaml
-```
-
-2. ArgoCD will automatically deploy the service to the `operations` namespace.
-
-### Manual Deployment
-
-```bash
-kubectl apply -f k8s/deployment.yaml
-```
-
-## 🔐 Security
-
-- **JWT Validation**: All requests require valid JWT tokens
-- **CORS**: Configured to allow requests from frontend only
-- **Role-based Access**: Admin endpoints protected by role checks
-- **Non-root Container**: Runs as non-root user in Docker
-
-## 📊 Monitoring
-
-- **Health Endpoint**: `/health` for Kubernetes health checks
-- **Metrics**: Prometheus metrics available at `/metrics`
-- **Logging**: Structured logging with correlation IDs
 
 ## 🔧 Configuration
 
-### Environment Variables
+### Project Structure
 
-- `ENVIRONMENT`: Application environment (development/production)
-- `FRONTEND_URL`: Frontend URL for CORS configuration
-- `DATABASE_URL`: PostgreSQL connection string
-- `JWT_SECRET`: Secret for JWT token validation
-- `REDIS_URL`: Redis connection string (for caching/sessions)
-
-### Secrets
-
-Store sensitive data in Kubernetes secrets:
-- `operations-backoffice-secrets`
-
-## 🚀 Deployment Pipeline
-
-1. **CI**: GitHub Actions runs tests and builds Docker image
-2. **Registry**: Image pushed to container registry
-3. **ArgoCD**: Automatically syncs and deploys new image
-4. **Health Check**: Kubernetes validates deployment health
-
-## 📚 API Usage Examples
-
-### Get Current User
-```bash
-curl -H "Authorization: Bearer <jwt-token>" \
-     http://localhost:8000/api/me
+```
+src/
+├── core/           # Core functionality (settings, database)
+├── domain/         # Domain models and repositories
+└── web/           # Web layer (API routes, services)
+    ├── api/       # API routes and endpoints
+    ├── deps/      # Dependency injection
+    └── services/  # Business logic services
 ```
 
-### Get All Users (Admin)
+### Database Configuration
+- **Engine**: PostgreSQL 17.4 with asyncpg driver
+- **ORM**: SQLAlchemy 2.0 with async support
+- **Migrations**: Alembic for schema management
+- **Connection Pool**: Configurable pool size and timeouts
+
+### Monitoring & Observability
+- **Prometheus**: Metrics collection at `/metrics`
+- **Health Checks**: Built-in health monitoring
+- **Structured Logging**: JSON-formatted logs
+- **Performance Tracking**: Request timing and database queries
+
+## 🔐 Security
+
+### Request Signing
+All API requests must be signed using HMAC-SHA256:
+1. Create payload: `{method}|{body}|{timestamp}`
+2. Sign with secret key using HMAC-SHA256
+3. Include signature and timestamp in headers
+
+### Environment Security
+- Environment variables prefixed with `APP_`
+- Separate development and production configurations
+- Docker secrets for sensitive data
+
+## 📊 Performance
+
+- **Async Database**: Non-blocking database operations
+- **Connection Pooling**: Efficient database connection management
+- **Request Validation**: Fast Pydantic model validation
+- **Response Caching**: Configurable caching strategies
+
+## 🚀 Development Workflow
+
+### Pre-commit Hooks
 ```bash
-curl -H "Authorization: Bearer <admin-jwt-token>" \
-     http://localhost:8000/api/users
+# Install pre-commit hooks
+uv run pre-commit install
+
+# Run hooks manually
+uv run pre-commit run --all-files
 ```
 
-### Update User Permissions (Admin)
-```bash
-curl -X PUT \
-     -H "Authorization: Bearer <admin-jwt-token>" \
-     -H "Content-Type: application/json" \
-     -d '{"user_id": "2", "permission_ids": ["read", "write"]}' \
-     http://localhost:8000/api/users/2/permissions
-```
+### Code Quality
+- **Ruff**: Fast Python linter and formatter
+- **Pyright**: Static type checking
+- **Pre-commit**: Automated code quality checks
+- **Conventional Commits**: Standardized commit messages
+
+## 🔗 Frontend Integration
+
+The backend communicates with the React frontend via:
+- RESTful API endpoints
+- JSON request/response format
+- Signature-based authentication
+- CORS-enabled requests
+
+### API Documentation
+- Interactive docs available at `/docs`
+- OpenAPI 3.0 specification
+- Example requests and responses
+- Schema validation details
