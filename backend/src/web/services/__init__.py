@@ -6,7 +6,7 @@ operation like an api endpoint. It concerns it related to the trigger, and uses
 the repository to access the data.
 """
 
-__all__ = ["HeroService", "TeamService"]
+__all__ = ["UserService", "PermissionService"]
 
-from .hero import HeroService
-from .team import TeamService
+from .user import UserService
+from .permission import PermissionService

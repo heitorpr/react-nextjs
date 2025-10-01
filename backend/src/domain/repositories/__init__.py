@@ -7,7 +7,8 @@ real world, like user.
 It concerns only in operating with the data, not how it is stored or presented.
 """
 
-__all__ = ["HeroRepository", "TeamRepository"]
+__all__ = ["UserRepository", "PermissionRepository", "UserPermissionRepository"]
 
-from .hero import HeroRepository
-from .team import TeamRepository
+from .user import UserRepository
+from .permission import PermissionRepository
+from .user_permission import UserPermissionRepository

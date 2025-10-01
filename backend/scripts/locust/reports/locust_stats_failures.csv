@@ -1,0 +1,5 @@
+Method,Name,Error,Occurrences
+POST,/api/users/,HTTPError('401 Client Error: Unauthorized for url: /api/users/'),78
+GET,/api/permissions/,HTTPError('401 Client Error: Unauthorized for url: /api/permissions/'),13
+POST,/api/permissions/,HTTPError('401 Client Error: Unauthorized for url: /api/permissions/'),19
+GET,/api/users/,HTTPError('401 Client Error: Unauthorized for url: /api/users/'),9

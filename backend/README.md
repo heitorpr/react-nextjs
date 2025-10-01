@@ -114,13 +114,13 @@ docker-compose down
 
 ```bash
 # Run migrations
-docker-compose exec app alembic upgrade head
+docker compose exec app alembic upgrade head
 
 # Create new migration
-docker-compose exec app alembic revision --autogenerate -m "description"
+docker compose exec app alembic revision --autogenerate -m "description"
 
 # Check migration status
-docker-compose exec app alembic current
+docker compose exec app alembic current
 ```
 
 ## 🔧 Configuration

@@ -1,5 +1,5 @@
-__all__ = ["app_router", "hero_router", "team_router"]
+__all__ = ["app_router", "user_router", "permission_router"]
 
 from .app import router as app_router
-from .hero import router as hero_router
-from .team import router as team_router
+from .user import router as user_router
+from .permission import router as permission_router
