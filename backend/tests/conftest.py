@@ -7,9 +7,10 @@ from testcontainers.postgres import PostgresContainer
 # ruff: noqa: F403
 # sonarignore: python:S2208
 from src.domain.models import *
-from src.domain.models.hero import HeroCreate
-from src.domain.models.team import TeamCreate
-from src.domain.repositories import HeroRepository, TeamRepository
+from src.domain.models.user import UserCreate
+from src.domain.models.permission import PermissionCreate
+from src.domain.models.user_permission import UserPermissionCreate
+from src.domain.repositories import UserRepository, PermissionRepository, UserPermissionRepository
 
 """
 This file contains fixtures that are shared across all tests.
@@ -94,40 +95,67 @@ async def db_session(session_local):
 
 
 @pytest.fixture()
-def hero_repository(db_session):
-    return HeroRepository(session=db_session)
+def user_repository(db_session):
+    return UserRepository(session=db_session)
 
 
 @pytest.fixture()
-def team_repository(db_session):
-    return TeamRepository(session=db_session)
+def permission_repository(db_session):
+    return PermissionRepository(session=db_session)
 
 
 @pytest.fixture()
-def hero_create():
-    return HeroCreate(
-        name="Test Hero",
-        secret_name="Test Secret Name",
-        age=30,
+def user_permission_repository(db_session):
+    return UserPermissionRepository(session=db_session)
+
+
+@pytest.fixture()
+def user_create():
+    return UserCreate(
+        email="test@example.com",
+        name="Test User",
+        google_id="test_google_id_123",
+        is_admin=False,
+        is_active=True,
     )
 
 
 @pytest.fixture()
-def team_create():
-    return TeamCreate(
-        name="Test Team",
-        headquarters="Test Headquarters",
+def permission_create():
+    return PermissionCreate(
+        name="test_permission",
+        description="Test permission for testing",
     )
 
 
 @pytest.fixture()
-async def hero(hero_repository, hero_create):
-    return await hero_repository.create(hero_create)
+def user_permission_create():
+    return UserPermissionCreate(
+        user_uuid="123e4567-e89b-12d3-a456-426614174000",
+        permission_uuid="123e4567-e89b-12d3-a456-426614174001",
+    )
 
 
 @pytest.fixture()
-async def team(team_repository, team_create):
-    return await team_repository.create(team_create)
+async def user(user_repository, user_create):
+    return await user_repository.create(user_create)
+
+
+@pytest.fixture()
+async def permission(permission_repository, permission_create):
+    return await permission_repository.create(permission_create)
+
+
+@pytest.fixture()
+async def admin_user(user_repository):
+    admin_create = UserCreate(
+        email="admin@example.com",
+        name="Admin User",
+        google_id="admin_google_id_123",
+        is_admin=True,
+        is_active=True,
+    )
+    return await user_repository.create(admin_create)
 
 
 # --- End domain fixtures ---

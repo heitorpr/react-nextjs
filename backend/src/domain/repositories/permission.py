@@ -41,7 +41,9 @@ class PermissionRepository:
         result = await self.session.execute(statement)
         return result.scalar_one_or_none()
 
-    async def update(self, permission: Permission, permission_update: PermissionUpdate) -> Permission:
+    async def update(
+        self, permission: Permission, permission_update: PermissionUpdate
+    ) -> Permission:
         for key, value in permission_update.model_dump(exclude_unset=True).items():
             setattr(permission, key, value)
 

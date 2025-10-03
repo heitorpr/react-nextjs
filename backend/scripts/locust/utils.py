@@ -44,7 +44,7 @@ def create_json_body(data: Dict[str, Any]) -> str:
     Returns:
         Compact JSON string (no spaces after colons/commas)
     """
-    return json.dumps(data, separators=(',', ':'))
+    return json.dumps(data, separators=(",", ":"))
 
 
 def generate_unique_user_data(faker) -> Dict[str, Any]:
@@ -58,6 +58,7 @@ def generate_unique_user_data(faker) -> Dict[str, Any]:
         Dictionary with unique user data
     """
     import time
+
     timestamp = int(time.time() * 1000)
 
     return {
@@ -65,11 +66,13 @@ def generate_unique_user_data(faker) -> Dict[str, Any]:
         "name": faker.name(),
         "google_id": f"test-google-{timestamp}-{faker.random_int(1000, 9999)}",
         "is_admin": False,
-        "is_active": True
+        "is_active": True,
     }
 
 
-def log_request_failure(action: str, response, extra_info: Dict[str, Any] = None, headers: Dict[str, str] = None) -> None:
+def log_request_failure(
+    action: str, response, extra_info: Dict[str, Any] = None, headers: Dict[str, str] = None
+) -> None:
     """
     Log request failures with consistent formatting.
 

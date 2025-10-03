@@ -177,11 +177,7 @@ async def list_admin_users(service: UserServiceDep):
     tags=["users"],
     status_code=status.HTTP_200_OK,
 )
-async def check_user_permission(
-    uuid: UUID,
-    permission_name: str,
-    service: UserServiceDep
-):
+async def check_user_permission(uuid: UUID, permission_name: str, service: UserServiceDep):
     try:
         has_permission = await service.check_user_has_permission(uuid, permission_name)
         return {"has_permission": has_permission}

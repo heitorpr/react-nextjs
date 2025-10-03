@@ -21,6 +21,7 @@ faker = Faker()
 
 class UserLoadTest(HttpUser):
     """Load test focused on user management operations"""
+
     tasks = [UserTasks]
     host = "http://localhost:8000"
     wait_time = between(1, 3)
@@ -29,6 +30,7 @@ class UserLoadTest(HttpUser):
 
 class PermissionLoadTest(HttpUser):
     """Load test focused on permission management operations"""
+
     tasks = [PermissionTasks]
     host = "http://localhost:8000"
     wait_time = between(1, 3)
@@ -37,6 +39,7 @@ class PermissionLoadTest(HttpUser):
 
 class AdminLoadTest(HttpUser):
     """Load test focused on admin operations and complex workflows"""
+
     tasks = [AdminTasks]
     host = "http://localhost:8000"
     wait_time = between(1, 3)
@@ -45,6 +48,7 @@ class AdminLoadTest(HttpUser):
 
 class ComprehensiveLoadTest(HttpUser):
     """Comprehensive load test combining all operations"""
+
     tasks = [UserTasks, PermissionTasks, AdminTasks]
     host = "http://localhost:8000"
     wait_time = between(1, 5)

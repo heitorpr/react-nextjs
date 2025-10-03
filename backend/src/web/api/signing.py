@@ -25,14 +25,7 @@ async def _signing(request: Request):
     )
 
     if calculated_signature != signature:
-        raise HTTPException(status_code=401, detail={
-            "error": "Invalid signature",
-            "calculated_signature": calculated_signature,
-            "signature": signature,
-            "timestamp": timestamp,
-            "body": body.decode(),
-            "secret_key": settings.secret_key,
-        })
+        raise HTTPException(status_code=401, detail={"error": "Invalid signature"})
 
 
 async def signing(request: Request):

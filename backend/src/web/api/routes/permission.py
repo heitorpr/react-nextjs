@@ -78,7 +78,9 @@ async def get_permission_by_name(name: str, service: PermissionServiceDep):
         status.HTTP_404_NOT_FOUND: {"description": "Permission not found"},
     },
 )
-async def update_permission(uuid: UUID, permission_update: PermissionUpdate, service: PermissionServiceDep):
+async def update_permission(
+    uuid: UUID, permission_update: PermissionUpdate, service: PermissionServiceDep
+):
     try:
         return await service.update_permission(uuid, permission_update)
     except IntegrityError as error:
@@ -133,9 +135,7 @@ async def list_permissions(
     },
 )
 async def assign_permission_to_user(
-    user_uuid: UUID,
-    permission_uuid: UUID,
-    service: PermissionServiceDep
+    user_uuid: UUID, permission_uuid: UUID, service: PermissionServiceDep
 ):
     try:
         assigned = await service.assign_permission_to_user(user_uuid, permission_uuid)
@@ -158,9 +158,7 @@ async def assign_permission_to_user(
     },
 )
 async def revoke_permission_from_user(
-    user_uuid: UUID,
-    permission_uuid: UUID,
-    service: PermissionServiceDep
+    user_uuid: UUID, permission_uuid: UUID, service: PermissionServiceDep
 ):
     try:
         revoked = await service.revoke_permission_from_user(user_uuid, permission_uuid)

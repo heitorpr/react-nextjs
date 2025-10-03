@@ -13,5 +13,7 @@ def get_permission_repository(db: AsyncSession = Depends(get_db_session)) -> Per
     return PermissionRepository(db)
 
 
-def get_user_permission_repository(db: AsyncSession = Depends(get_db_session)) -> UserPermissionRepository:
+def get_user_permission_repository(
+    db: AsyncSession = Depends(get_db_session),
+) -> UserPermissionRepository:
     return UserPermissionRepository(db)

@@ -13,11 +13,10 @@ class UserPermissionRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create(self, user_permission_create: UserPermissionCreate, user: User, permission: Permission) -> UserPermission:
-        user_permission = UserPermission(
-            user_id=user.id,
-            permission_id=permission.id
-        )
+    async def create(
+        self, user_permission_create: UserPermissionCreate, user: User, permission: Permission
+    ) -> UserPermission:
+        user_permission = UserPermission(user_id=user.id, permission_id=permission.id)
 
         self.session.add(user_permission)
         await self.session.flush()
@@ -38,10 +37,11 @@ class UserPermissionRepository:
         except NoResultFound as error:
             raise NoUserPermissionFound("UserPermission not found") from error
 
-    async def get_by_user_and_permission(self, user: User, permission: Permission) -> UserPermission | None:
+    async def get_by_user_and_permission(
+        self, user: User, permission: Permission
+    ) -> UserPermission | None:
         statement = select(UserPermission).where(
-            UserPermission.user_id == user.id,
-            UserPermission.permission_id == permission.id
+            UserPermission.user_id == user.id, UserPermission.permission_id == permission.id
         )
 
         result = await self.session.execute(statement)

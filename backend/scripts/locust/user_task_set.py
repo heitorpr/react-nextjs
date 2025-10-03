@@ -1,11 +1,14 @@
-import json
 import random
-import uuid
 
 from faker import Faker
 from locust import TaskSet, task
 
-from scripts.locust.utils import get_auth_headers, create_json_body, log_request_failure, generate_unique_user_data
+from scripts.locust.utils import (
+    get_auth_headers,
+    create_json_body,
+    log_request_failure,
+    generate_unique_user_data,
+)
 
 faker = Faker()
 
@@ -46,11 +49,15 @@ class UserTasks(TaskSet):
     def get_user_with_permissions(self, user_id: str):
         headers = get_auth_headers("GET", "")
         response = self.client.get(
-            f"/api/users/{user_id}/permissions", headers=headers, name="/api/users/{uuid}/permissions"
+            f"/api/users/{user_id}/permissions",
+            headers=headers,
+            name="/api/users/{uuid}/permissions",
         )
 
         if response.status_code != 200:
-            log_request_failure("Get User with Permissions", response, {"user_id": user_id}, headers)
+            log_request_failure(
+                "Get User with Permissions", response, {"user_id": user_id}, headers
+            )
             return None
 
         return response.json()
@@ -62,7 +69,9 @@ class UserTasks(TaskSet):
         )
 
         if response.status_code != 200:
-            log_request_failure("Get User by Google ID", response, {"google_id": google_id}, headers)
+            log_request_failure(
+                "Get User by Google ID", response, {"google_id": google_id}, headers
+            )
             return None
 
         return response.json().get("uuid")
@@ -80,10 +89,7 @@ class UserTasks(TaskSet):
         return response.json().get("uuid")
 
     def update_user(self, user_id: str):
-        update_data = {
-            "name": faker.name(),
-            "is_active": random.choice([True, False])
-        }
+        update_data = {"name": faker.name(), "is_active": random.choice([True, False])}
 
         body = create_json_body(update_data)
         headers = get_auth_headers("PUT", body)
@@ -92,7 +98,9 @@ class UserTasks(TaskSet):
         )
 
         if response.status_code != 200:
-            log_request_failure("Update User", response, {"user_id": user_id, "data": update_data}, headers)
+            log_request_failure(
+                "Update User", response, {"user_id": user_id, "data": update_data}, headers
+            )
             return None
 
         return response.json().get("uuid")
@@ -103,9 +111,7 @@ class UserTasks(TaskSet):
 
         headers = get_auth_headers("GET", "")
         response = self.client.get(
-            f"/api/users/?skip={skip}&limit={limit}",
-            headers=headers,
-            name="/api/users/"
+            f"/api/users/?skip={skip}&limit={limit}", headers=headers, name="/api/users/"
         )
 
         if response.status_code != 200:
@@ -129,11 +135,16 @@ class UserTasks(TaskSet):
         response = self.client.get(
             f"/api/users/{user_id}/has-permission/{permission_name}",
             headers=headers,
-            name="/api/users/{uuid}/has-permission/{permission_name}"
+            name="/api/users/{uuid}/has-permission/{permission_name}",
         )
 
         if response.status_code != 200:
-            log_request_failure("Check User Permission", response, {"user_id": user_id, "permission": permission_name}, headers)
+            log_request_failure(
+                "Check User Permission",
+                response,
+                {"user_id": user_id, "permission": permission_name},
+                headers,
+            )
             return None
 
         return response.json()
@@ -143,7 +154,7 @@ class UserTasks(TaskSet):
         response = self.client.get(
             f"/api/users/{user_id}/permissions",
             headers=headers,
-            name="/api/users/{uuid}/permissions"
+            name="/api/users/{uuid}/permissions",
         )
 
         if response.status_code != 200:

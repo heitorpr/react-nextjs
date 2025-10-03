@@ -6,7 +6,9 @@ from src.domain.repositories import UserRepository, UserPermissionRepository
 
 
 class UserService:
-    def __init__(self, user_repository: UserRepository, user_permission_repository: UserPermissionRepository):
+    def __init__(
+        self, user_repository: UserRepository, user_permission_repository: UserPermissionRepository
+    ):
         self.user_repository = user_repository
         self.user_permission_repository = user_permission_repository
 
@@ -17,10 +19,7 @@ class UserService:
         permissions = await self.user_permission_repository.get_user_permissions(user)
         permission_names = [p.name for p in permissions]
 
-        return UserWithPermissions(
-            **user.model_dump(),
-            permissions=permission_names
-        )
+        return UserWithPermissions(**user.model_dump(), permissions=permission_names)
 
     async def create_user(self, user_create: UserCreate) -> UserPublic:
         user = await self.user_repository.create(user_create)

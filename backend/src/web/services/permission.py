@@ -2,6 +2,7 @@ from uuid import UUID
 
 from src.domain.models import Permission
 from src.domain.models.permission import PermissionCreate, PermissionPublic, PermissionUpdate
+from src.domain.models.user_permission import UserPermissionCreate
 from src.domain.repositories import PermissionRepository, UserRepository, UserPermissionRepository
 
 
@@ -10,7 +11,7 @@ class PermissionService:
         self,
         permission_repository: PermissionRepository,
         user_repository: UserRepository,
-        user_permission_repository: UserPermissionRepository
+        user_permission_repository: UserPermissionRepository,
     ):
         self.permission_repository = permission_repository
         self.user_repository = user_repository
@@ -33,7 +34,9 @@ class PermissionService:
             return await self._parse_to_public(permission)
         return None
 
-    async def update_permission(self, uuid: UUID, permission_update: PermissionUpdate) -> PermissionPublic:
+    async def update_permission(
+        self, uuid: UUID, permission_update: PermissionUpdate
+    ) -> PermissionPublic:
         permission = await self.permission_repository.get(uuid)
         permission = await self.permission_repository.update(permission, permission_update)
         return await self._parse_to_public(permission)
@@ -52,13 +55,16 @@ class PermissionService:
         permission = await self.permission_repository.get(permission_uuid)
 
         # Check if already assigned
-        existing = await self.user_permission_repository.get_by_user_and_permission(user, permission)
+        existing = await self.user_permission_repository.get_by_user_and_permission(
+            user, permission
+        )
         if existing:
             return False
 
         await self.user_permission_repository.create(
             UserPermissionCreate(user_uuid=user_uuid, permission_uuid=permission_uuid),
-            user, permission
+            user,
+            permission,
         )
         return True
 
@@ -67,7 +73,9 @@ class PermissionService:
         user = await self.user_repository.get(user_uuid)
         permission = await self.permission_repository.get(permission_uuid)
 
-        existing = await self.user_permission_repository.get_by_user_and_permission(user, permission)
+        existing = await self.user_permission_repository.get_by_user_and_permission(
+            user, permission
+        )
         if not existing:
             return False
 
