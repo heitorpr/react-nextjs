@@ -1,33 +1,13 @@
 import json
 import random
 import uuid
-from datetime import datetime, timezone
 
 from faker import Faker
 from locust import TaskSet, task
 
-from src.core.settings import settings
-from src.web.api.signing import generate_signature
+from scripts.locust.utils import get_auth_headers, create_json_body, log_request_failure, generate_unique_user_data
 
 faker = Faker()
-
-
-def get_headers(method: str, body: str) -> dict:
-    timestamp = str(datetime.now(timezone.utc).timestamp() * 1000)
-    signature = generate_signature(method, body, timestamp, settings.secret_key)
-
-    return {
-        "x-signature": signature,
-        "x-timestamp": timestamp,
-        "Content-Type": "application/json",
-    }
-
-
-def log_failure(action: str, response, extra_info=None):
-    print(f"[{action}] - Status: {response.status_code}")
-    print(f"Response: {response.text}")
-    if extra_info:
-        print(f"Info: {json.dumps(extra_info, indent=2)}")
 
 
 class AdminTasks(TaskSet):
@@ -39,20 +19,15 @@ class AdminTasks(TaskSet):
 
     def create_admin_user(self):
         """Create an admin user for testing admin workflows"""
-        user_data = {
-            "email": faker.email(),
-            "name": faker.name(),
-            "google_id": faker.uuid4(),
-            "is_admin": True,
-            "is_active": True
-        }
+        user_data = generate_unique_user_data(faker)
+        user_data["is_admin"] = True
 
-        body = json.dumps(user_data)
-        headers = get_headers("POST", body)
+        body = create_json_body(user_data)
+        headers = get_auth_headers("POST", body)
         response = self.client.post("/api/users/", data=body, headers=headers)
 
         if response.status_code != 201:
-            log_failure("Create Admin User", response, user_data)
+            log_request_failure("Create Admin User", response, user_data, headers)
             return None
 
         user_uuid = response.json().get("uuid")
@@ -62,20 +37,14 @@ class AdminTasks(TaskSet):
 
     def create_regular_user(self):
         """Create a regular user for testing"""
-        user_data = {
-            "email": faker.email(),
-            "name": faker.name(),
-            "google_id": faker.uuid4(),
-            "is_admin": False,
-            "is_active": True
-        }
+        user_data = generate_unique_user_data(faker)
 
-        body = json.dumps(user_data)
-        headers = get_headers("POST", body)
+        body = create_json_body(user_data)
+        headers = get_auth_headers("POST", body)
         response = self.client.post("/api/users/", data=body, headers=headers)
 
         if response.status_code != 201:
-            log_failure("Create Regular User", response, user_data)
+            log_request_failure("Create Regular User", response, user_data, headers)
             return None
 
         user_uuid = response.json().get("uuid")
@@ -89,12 +58,12 @@ class AdminTasks(TaskSet):
             "description": faker.sentence()
         }
 
-        body = json.dumps(permission_data)
-        headers = get_headers("POST", body)
+        body = create_json_body(permission_data)
+        headers = get_auth_headers("POST", body)
         response = self.client.post("/api/permissions/", data=body, headers=headers)
 
         if response.status_code != 201:
-            log_failure("Create Permission", response, permission_data)
+            log_request_failure("Create Permission", response, permission_data, headers)
             return None
 
         permission_uuid = response.json().get("uuid")
@@ -103,18 +72,18 @@ class AdminTasks(TaskSet):
 
     def get_admin_users(self):
         """Get all admin users"""
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get("/api/users/admins/all", headers=headers)
 
         if response.status_code != 200:
-            log_failure("Get Admin Users", response)
+            log_request_failure("Get Admin Users", response, headers=headers)
             return None
 
         return response.json()
 
     def get_user_permissions(self, user_id: str):
         """Get user permissions"""
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get(
             f"/api/users/{user_id}/permissions",
             headers=headers,
@@ -122,14 +91,14 @@ class AdminTasks(TaskSet):
         )
 
         if response.status_code != 200:
-            log_failure("Get User Permissions", response, {"user_id": user_id})
+            log_request_failure("Get User Permissions", response, {"user_id": user_id}, headers)
             return None
 
         return response.json()
 
     def check_user_has_permission(self, user_id: str, permission_name: str):
         """Check if user has specific permission"""
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get(
             f"/api/users/{user_id}/has-permission/{permission_name}",
             headers=headers,
@@ -137,14 +106,14 @@ class AdminTasks(TaskSet):
         )
 
         if response.status_code != 200:
-            log_failure("Check User Permission", response, {"user_id": user_id, "permission": permission_name})
+            log_request_failure("Check User Permission", response, {"user_id": user_id, "permission": permission_name}, headers)
             return None
 
         return response.json()
 
     def assign_permission_to_user(self, user_id: str, permission_id: str):
         """Assign permission to user"""
-        headers = get_headers("POST", "")
+        headers = get_auth_headers("POST", "")
         response = self.client.post(
             f"/api/permissions/assign/{user_id}/{permission_id}",
             headers=headers,
@@ -152,14 +121,14 @@ class AdminTasks(TaskSet):
         )
 
         if response.status_code != 200:
-            log_failure("Assign Permission to User", response, {"user_id": user_id, "permission_id": permission_id})
+            log_request_failure("Assign Permission to User", response, {"user_id": user_id, "permission_id": permission_id}, headers)
             return False
 
         return True
 
     def revoke_permission_from_user(self, user_id: str, permission_id: str):
         """Revoke permission from user"""
-        headers = get_headers("DELETE", "")
+        headers = get_auth_headers("DELETE", "")
         response = self.client.delete(
             f"/api/permissions/revoke/{user_id}/{permission_id}",
             headers=headers,
@@ -167,14 +136,14 @@ class AdminTasks(TaskSet):
         )
 
         if response.status_code != 200:
-            log_failure("Revoke Permission from User", response, {"user_id": user_id, "permission_id": permission_id})
+            log_request_failure("Revoke Permission from User", response, {"user_id": user_id, "permission_id": permission_id}, headers)
             return False
 
         return True
 
     def get_permission_users(self, permission_id: str):
         """Get users with specific permission"""
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get(
             f"/api/permissions/{permission_id}/users",
             headers=headers,
@@ -182,7 +151,7 @@ class AdminTasks(TaskSet):
         )
 
         if response.status_code != 200:
-            log_failure("Get Permission Users", response, {"permission_id": permission_id})
+            log_request_failure("Get Permission Users", response, {"permission_id": permission_id}, headers)
             return None
 
         return response.json()
@@ -193,14 +162,14 @@ class AdminTasks(TaskSet):
             "is_admin": is_admin
         }
 
-        body = json.dumps(update_data)
-        headers = get_headers("PUT", body)
+        body = create_json_body(update_data)
+        headers = get_auth_headers("PUT", body)
         response = self.client.put(
             f"/api/users/{user_id}", data=body, headers=headers, name="/api/users/{uuid}"
         )
 
         if response.status_code != 200:
-            log_failure("Update User Admin Status", response, {"user_id": user_id, "is_admin": is_admin})
+            log_request_failure("Update User Admin Status", response, {"user_id": user_id, "is_admin": is_admin}, headers)
             return None
 
         return response.json().get("uuid")
@@ -318,7 +287,7 @@ class AdminTasks(TaskSet):
         admins = self.get_admin_users()
 
         # List users
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get("/api/users/?skip=0&limit=10", headers=headers, name="/api/users/")
         if response.status_code == 200:
             users = response.json()
@@ -331,7 +300,7 @@ class AdminTasks(TaskSet):
                     self.check_user_has_permission(user_id, "manage_user_access")
 
         # List permissions
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get("/api/permissions/?skip=0&limit=10", headers=headers, name="/api/permissions/")
         if response.status_code == 200:
             permissions = response.json()

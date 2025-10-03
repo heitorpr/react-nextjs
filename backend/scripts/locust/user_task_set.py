@@ -1,33 +1,13 @@
 import json
 import random
 import uuid
-from datetime import datetime, timezone
 
 from faker import Faker
 from locust import TaskSet, task
 
-from src.core.settings import settings
-from src.web.api.signing import generate_signature
+from scripts.locust.utils import get_auth_headers, create_json_body, log_request_failure, generate_unique_user_data
 
 faker = Faker()
-
-
-def get_headers(method: str, body: str) -> dict:
-    timestamp = str(int(datetime.now(timezone.utc).timestamp() * 1000))
-    signature = generate_signature(method, body, timestamp, settings.secret_key)
-
-    return {
-        "x-signature": signature,
-        "x-timestamp": timestamp,
-        "Content-Type": "application/json",
-    }
-
-
-def log_failure(action: str, response, extra_info=None):
-    print(f"[{action}] - Status: {response.status_code}")
-    print(f"Response: {response.text}")
-    if extra_info:
-        print(f"Info: {json.dumps(extra_info, indent=2)}")
 
 
 class UserTasks(TaskSet):
@@ -37,20 +17,14 @@ class UserTasks(TaskSet):
         self.current_user_uuid = None
 
     def create_user(self):
-        user_data = {
-            "email": faker.email(),
-            "name": faker.name(),
-            "google_id": faker.uuid4(),
-            "is_admin": False,
-            "is_active": True
-        }
+        user_data = generate_unique_user_data(faker)
 
-        body = json.dumps(user_data)
-        headers = get_headers("POST", body)
+        body = create_json_body(user_data)
+        headers = get_auth_headers("POST", body)
         response = self.client.post("/api/users/", data=body, headers=headers)
 
         if response.status_code != 201:
-            log_failure("Create User", response, user_data)
+            log_request_failure("Create User", response, user_data, headers)
             return None
 
         user_uuid = response.json().get("uuid")
@@ -58,49 +32,49 @@ class UserTasks(TaskSet):
         return user_uuid
 
     def get_user(self, user_id: str):
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get(
             f"/api/users/{user_id}", headers=headers, name="/api/users/{uuid}"
         )
 
         if response.status_code != 200:
-            log_failure("Get User", response, {"user_id": user_id})
+            log_request_failure("Get User", response, {"user_id": user_id}, headers)
             return None
 
         return response.json().get("uuid")
 
     def get_user_with_permissions(self, user_id: str):
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get(
             f"/api/users/{user_id}/permissions", headers=headers, name="/api/users/{uuid}/permissions"
         )
 
         if response.status_code != 200:
-            log_failure("Get User with Permissions", response, {"user_id": user_id})
+            log_request_failure("Get User with Permissions", response, {"user_id": user_id}, headers)
             return None
 
         return response.json()
 
     def get_user_by_google_id(self, google_id: str):
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get(
             f"/api/users/google/{google_id}", headers=headers, name="/api/users/google/{google_id}"
         )
 
         if response.status_code != 200:
-            log_failure("Get User by Google ID", response, {"google_id": google_id})
+            log_request_failure("Get User by Google ID", response, {"google_id": google_id}, headers)
             return None
 
         return response.json().get("uuid")
 
     def get_user_by_email(self, email: str):
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get(
             f"/api/users/email/{email}", headers=headers, name="/api/users/email/{email}"
         )
 
         if response.status_code != 200:
-            log_failure("Get User by Email", response, {"email": email})
+            log_request_failure("Get User by Email", response, {"email": email}, headers)
             return None
 
         return response.json().get("uuid")
@@ -111,14 +85,14 @@ class UserTasks(TaskSet):
             "is_active": random.choice([True, False])
         }
 
-        body = json.dumps(update_data)
-        headers = get_headers("PUT", body)
+        body = create_json_body(update_data)
+        headers = get_auth_headers("PUT", body)
         response = self.client.put(
             f"/api/users/{user_id}", data=body, headers=headers, name="/api/users/{uuid}"
         )
 
         if response.status_code != 200:
-            log_failure("Update User", response, {"user_id": user_id, "data": update_data})
+            log_request_failure("Update User", response, {"user_id": user_id, "data": update_data}, headers)
             return None
 
         return response.json().get("uuid")
@@ -127,7 +101,7 @@ class UserTasks(TaskSet):
         skip = random.randint(0, 10)
         limit = random.randint(1, 20)
 
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get(
             f"/api/users/?skip={skip}&limit={limit}",
             headers=headers,
@@ -135,23 +109,23 @@ class UserTasks(TaskSet):
         )
 
         if response.status_code != 200:
-            log_failure("List Users", response, {"skip": skip, "limit": limit})
+            log_request_failure("List Users", response, {"skip": skip, "limit": limit}, headers)
             return None
 
         return response.json()
 
     def get_admin_users(self):
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get("/api/users/admins/all", headers=headers)
 
         if response.status_code != 200:
-            log_failure("Get Admin Users", response)
+            log_request_failure("Get Admin Users", response, headers=headers)
             return None
 
         return response.json()
 
     def check_user_permission(self, user_id: str, permission_name: str):
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get(
             f"/api/users/{user_id}/has-permission/{permission_name}",
             headers=headers,
@@ -159,13 +133,13 @@ class UserTasks(TaskSet):
         )
 
         if response.status_code != 200:
-            log_failure("Check User Permission", response, {"user_id": user_id, "permission": permission_name})
+            log_request_failure("Check User Permission", response, {"user_id": user_id, "permission": permission_name}, headers)
             return None
 
         return response.json()
 
     def get_user_permissions(self, user_id: str):
-        headers = get_headers("GET", "")
+        headers = get_auth_headers("GET", "")
         response = self.client.get(
             f"/api/users/{user_id}/permissions",
             headers=headers,
@@ -173,19 +147,19 @@ class UserTasks(TaskSet):
         )
 
         if response.status_code != 200:
-            log_failure("Get User Permissions", response, {"user_id": user_id})
+            log_request_failure("Get User Permissions", response, {"user_id": user_id}, headers)
             return None
 
         return response.json()
 
     def delete_user(self, user_id: str):
-        headers = get_headers("DELETE", "")
+        headers = get_auth_headers("DELETE", "")
         response = self.client.delete(
             f"/api/users/{user_id}", headers=headers, name="/api/users/{uuid}"
         )
 
         if response.status_code != 204:
-            log_failure("Delete User", response, {"user_id": user_id})
+            log_request_failure("Delete User", response, {"user_id": user_id}, headers)
 
     @task(3)
     def create_and_manage_user(self):

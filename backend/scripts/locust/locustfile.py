@@ -6,6 +6,9 @@ from pathlib import Path
 backend_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(backend_root))
 
+# Set the working directory to backend root so .env file can be found
+os.chdir(backend_root)
+
 from faker import Faker
 from locust import HttpUser, between
 
