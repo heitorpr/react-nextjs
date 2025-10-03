@@ -119,18 +119,21 @@ frontend/public/offline-*.html
 backend/Makefile
 
 # Python-generated files
-backend/__pycache__/
-backend/*.py[oc]
-backend/build/
-backend/dist/
-backend/wheels/
-backend/*.egg-info/
+__pycache__/
+*.py[co]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+wheels/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
 
-# Python test files
-backend/.coverage
+# Python test files (specific backend paths)
 backend/coverage.xml
-backend/.pytest_cache/
-backend/htmlcov/
 
 # Virtual environments
 backend/.venv/
