@@ -9,7 +9,6 @@ from testcontainers.postgres import PostgresContainer
 from src.domain.models import *
 from src.domain.models.user import UserCreate
 from src.domain.models.permission import PermissionCreate
-from src.domain.models.user_permission import UserPermissionCreate
 from src.domain.repositories import UserRepository, PermissionRepository, UserPermissionRepository
 
 """
@@ -125,14 +124,6 @@ def permission_create():
     return PermissionCreate(
         name="test_permission",
         description="Test permission for testing",
-    )
-
-
-@pytest.fixture()
-def user_permission_create():
-    return UserPermissionCreate(
-        user_uuid="123e4567-e89b-12d3-a456-426614174000",
-        permission_uuid="123e4567-e89b-12d3-a456-426614174001",
     )
 
 

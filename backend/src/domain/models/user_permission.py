@@ -16,9 +16,8 @@ class UserPermission(UserPermissionBase, table=True):
     permission_id: int = Field(foreign_key="permission.id", title="Permission ID")
 
 
-class UserPermissionCreate(SQLModel):
-    user_uuid: UUID = Field(title="User UUID")
-    permission_uuid: UUID = Field(title="Permission UUID")
+class UserPermissionCreate(UserPermissionBase):
+    pass
 
 
 class UserPermissionPublic(SQLModel):

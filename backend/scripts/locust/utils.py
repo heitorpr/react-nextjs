@@ -71,7 +71,10 @@ def generate_unique_user_data(faker) -> Dict[str, Any]:
 
 
 def log_request_failure(
-    action: str, response, extra_info: Dict[str, Any] = None, headers: Dict[str, str] = None
+    action: str,
+    response,
+    extra_info: Dict[str, Any] | None = None,
+    headers: Dict[str, str] | None = None,
 ) -> None:
     """
     Log request failures with consistent formatting.

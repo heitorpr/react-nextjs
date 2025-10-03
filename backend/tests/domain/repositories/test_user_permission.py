@@ -8,11 +8,9 @@ from src.domain.repositories.user_permission import UserPermissionRepository
 @pytest.mark.asyncio(loop_scope="session")
 async def test_create_user_permission(db_session, user, permission):
     repository = UserPermissionRepository(session=db_session)
-    user_permission_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission.uuid
-    )
+    user_permission_create = UserPermissionCreate(user_id=user.id, permission_id=permission.id)
 
-    user_permission = await repository.create(user_permission_create, user, permission)
+    user_permission = await repository.create(user_permission_create)
 
     assert user_permission.id is not None
     assert user_permission.user_id == user.id
@@ -22,10 +20,8 @@ async def test_create_user_permission(db_session, user, permission):
 @pytest.mark.asyncio(loop_scope="session")
 async def test_get_user_permission(db_session, user, permission):
     repository = UserPermissionRepository(session=db_session)
-    user_permission_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission.uuid
-    )
-    user_permission = await repository.create(user_permission_create, user, permission)
+    user_permission_create = UserPermissionCreate(user_id=user.id, permission_id=permission.id)
+    user_permission = await repository.create(user_permission_create)
 
     user_permission_from_db = await repository.get(user_permission_id=user_permission.id)
     assert user_permission_from_db == user_permission
@@ -34,10 +30,8 @@ async def test_get_user_permission(db_session, user, permission):
 @pytest.mark.asyncio(loop_scope="session")
 async def test_get_user_permission_by_uuid(db_session, user, permission):
     repository = UserPermissionRepository(session=db_session)
-    user_permission_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission.uuid
-    )
-    user_permission = await repository.create(user_permission_create, user, permission)
+    user_permission_create = UserPermissionCreate(user_id=user.id, permission_id=permission.id)
+    user_permission = await repository.create(user_permission_create)
 
     user_permission_from_db = await repository.get(user_permission_id=user_permission.uuid)
     assert user_permission_from_db == user_permission
@@ -46,10 +40,8 @@ async def test_get_user_permission_by_uuid(db_session, user, permission):
 @pytest.mark.asyncio(loop_scope="session")
 async def test_get_by_user_and_permission(db_session, user, permission):
     repository = UserPermissionRepository(session=db_session)
-    user_permission_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission.uuid
-    )
-    await repository.create(user_permission_create, user, permission)
+    user_permission_create = UserPermissionCreate(user_id=user.id, permission_id=permission.id)
+    await repository.create(user_permission_create)
 
     user_permission = await repository.get_by_user_and_permission(user, permission)
     assert user_permission is not None
@@ -68,10 +60,8 @@ async def test_get_by_user_and_permission_not_found(db_session, user, permission
 @pytest.mark.asyncio(loop_scope="session")
 async def test_delete_user_permission(db_session, user, permission):
     repository = UserPermissionRepository(session=db_session)
-    user_permission_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission.uuid
-    )
-    user_permission = await repository.create(user_permission_create, user, permission)
+    user_permission_create = UserPermissionCreate(user_id=user.id, permission_id=permission.id)
+    user_permission = await repository.create(user_permission_create)
 
     await repository.delete(user_permission)
 
@@ -82,10 +72,8 @@ async def test_delete_user_permission(db_session, user, permission):
 @pytest.mark.asyncio(loop_scope="session")
 async def test_get_user_permissions(db_session, user, permission):
     repository = UserPermissionRepository(session=db_session)
-    user_permission_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission.uuid
-    )
-    await repository.create(user_permission_create, user, permission)
+    user_permission_create = UserPermissionCreate(user_id=user.id, permission_id=permission.id)
+    await repository.create(user_permission_create)
 
     permissions = await repository.get_user_permissions(user)
     assert len(permissions) == 1
@@ -95,10 +83,8 @@ async def test_get_user_permissions(db_session, user, permission):
 @pytest.mark.asyncio(loop_scope="session")
 async def test_get_permission_users(db_session, user, permission):
     repository = UserPermissionRepository(session=db_session)
-    user_permission_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission.uuid
-    )
-    await repository.create(user_permission_create, user, permission)
+    user_permission_create = UserPermissionCreate(user_id=user.id, permission_id=permission.id)
+    await repository.create(user_permission_create)
 
     users = await repository.get_permission_users(permission)
     assert len(users) == 1
@@ -108,10 +94,8 @@ async def test_get_permission_users(db_session, user, permission):
 @pytest.mark.asyncio(loop_scope="session")
 async def test_delete_user_permission_by_user_and_permission(db_session, user, permission):
     repository = UserPermissionRepository(session=db_session)
-    user_permission_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission.uuid
-    )
-    await repository.create(user_permission_create, user, permission)
+    user_permission_create = UserPermissionCreate(user_id=user.id, permission_id=permission.id)
+    await repository.create(user_permission_create)
 
     # Verify it exists
     user_permission = await repository.get_by_user_and_permission(user, permission)
@@ -149,19 +133,13 @@ async def test_multiple_permissions_for_user(
     permission3 = await permission_repository.create(permission3_create)
 
     # Assign all permissions to user
-    user_permission1_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission.uuid
-    )
-    user_permission2_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission2.uuid
-    )
-    user_permission3_create = UserPermissionCreate(
-        user_uuid=user.uuid, permission_uuid=permission3.uuid
-    )
+    user_permission1_create = UserPermissionCreate(user_id=user.id, permission_id=permission.id)
+    user_permission2_create = UserPermissionCreate(user_id=user.id, permission_id=permission2.id)
+    user_permission3_create = UserPermissionCreate(user_id=user.id, permission_id=permission3.id)
 
-    await repository.create(user_permission1_create, user, permission)
-    await repository.create(user_permission2_create, user, permission2)
-    await repository.create(user_permission3_create, user, permission3)
+    await repository.create(user_permission1_create)
+    await repository.create(user_permission2_create)
+    await repository.create(user_permission3_create)
 
     # Get all permissions for user
     permissions = await repository.get_user_permissions(user)

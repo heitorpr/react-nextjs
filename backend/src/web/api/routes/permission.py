@@ -117,9 +117,9 @@ async def delete_permission(uuid: UUID, service: PermissionServiceDep):
     status_code=status.HTTP_200_OK,
 )
 async def list_permissions(
+    service: PermissionServiceDep,
     skip: int = Query(0, ge=0, description="Number of permissions to skip"),
     limit: int = Query(100, ge=1, le=1000, description="Number of permissions to return"),
-    service: PermissionServiceDep = None,
 ):
     return await service.list_permissions(skip, limit)
 

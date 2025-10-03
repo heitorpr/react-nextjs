@@ -13,10 +13,8 @@ class UserPermissionRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create(
-        self, user_permission_create: UserPermissionCreate, user: User, permission: Permission
-    ) -> UserPermission:
-        user_permission = UserPermission(user_id=user.id, permission_id=permission.id)
+    async def create(self, user_permission_create: UserPermissionCreate) -> UserPermission:
+        user_permission = UserPermission(**user_permission_create.model_dump())
 
         self.session.add(user_permission)
         await self.session.flush()
@@ -54,7 +52,7 @@ class UserPermissionRepository:
     async def get_user_permissions(self, user: User) -> list[Permission]:
         statement = (
             select(Permission)
-            .join(UserPermission, Permission.id == UserPermission.permission_id)
+            .join(UserPermission, Permission.id == UserPermission.permission_id)  # type: ignore
             .where(UserPermission.user_id == user.id)
         )
 
@@ -64,7 +62,7 @@ class UserPermissionRepository:
     async def get_permission_users(self, permission: Permission) -> list[User]:
         statement = (
             select(User)
-            .join(UserPermission, User.id == UserPermission.user_id)
+            .join(UserPermission, User.id == UserPermission.user_id)  # type: ignore
             .where(UserPermission.permission_id == permission.id)
         )
 

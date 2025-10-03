@@ -102,8 +102,8 @@ async def test_list_all_users(db_session, user_repository, user_create):
     user3_create.email = "user3@example.com"
     user3_create.google_id = "google_id_3"
 
-    user2 = await user_repository.create(user2_create)
-    user3 = await user_repository.create(user3_create)
+    await user_repository.create(user2_create)
+    await user_repository.create(user3_create)
 
     users = await user_repository.list_all(skip=0, limit=10)
     assert len(users) >= 2  # At least the 2 we created in this test

@@ -4,7 +4,7 @@ from uuid6 import uuid7
 
 from src.domain.models.permission import PermissionPublic, PermissionUpdate
 from src.domain.repositories.exceptions import NoPermissionFound, NoUserFound
-from src.web.deps import PermissionServiceDep
+from src.web.deps.services import get_permission_service
 from src.web.main import app
 from src.web.services import PermissionService
 
@@ -98,8 +98,8 @@ async def test_list_permissions(client, permission_repository, permission_create
     permission3_create = permission_create.model_copy()
     permission3_create.name = "permission_3"
 
-    permission2 = await permission_repository.create(permission2_create)
-    permission3 = await permission_repository.create(permission3_create)
+    await permission_repository.create(permission2_create)
+    await permission_repository.create(permission3_create)
 
     response = await client.get("/api/permissions/", headers=auth_headers("GET", {}))
     assert response.status_code == status.HTTP_200_OK
@@ -182,7 +182,7 @@ async def test_get_permission_not_found(client, auth_headers, mocker):
     def _override():
         return service_mock
 
-    app.dependency_overrides[PermissionServiceDep] = _override
+    app.dependency_overrides[get_permission_service] = _override
 
     response = await client.get(f"/api/permissions/{uuid7()}", headers=auth_headers("GET", {}))
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -216,7 +216,7 @@ async def test_update_permission_not_found(client, auth_headers, mocker):
     def _override():
         return service_mock
 
-    app.dependency_overrides[PermissionServiceDep] = _override
+    app.dependency_overrides[get_permission_service] = _override
 
     permission_update = PermissionUpdate(name="Updated Name")
     body = permission_update.model_dump(mode="json", exclude_unset=True)
@@ -238,7 +238,7 @@ async def test_delete_permission_not_found(client, auth_headers, mocker):
     def _override():
         return service_mock
 
-    app.dependency_overrides[PermissionServiceDep] = _override
+    app.dependency_overrides[get_permission_service] = _override
 
     response = await client.delete(
         f"/api/permissions/{uuid7()}", headers=auth_headers("DELETE", {})
@@ -257,7 +257,7 @@ async def test_assign_permission_user_not_found(client, permission, auth_headers
     def _override():
         return service_mock
 
-    app.dependency_overrides[PermissionServiceDep] = _override
+    app.dependency_overrides[get_permission_service] = _override
 
     response = await client.post(
         f"/api/permissions/assign/{uuid7()}/{permission.uuid}", headers=auth_headers("POST", {})
@@ -276,7 +276,7 @@ async def test_assign_permission_permission_not_found(client, user, auth_headers
     def _override():
         return service_mock
 
-    app.dependency_overrides[PermissionServiceDep] = _override
+    app.dependency_overrides[get_permission_service] = _override
 
     response = await client.post(
         f"/api/permissions/assign/{user.uuid}/{uuid7()}", headers=auth_headers("POST", {})
@@ -295,7 +295,7 @@ async def test_get_permission_users_not_found(client, auth_headers, mocker):
     def _override():
         return service_mock
 
-    app.dependency_overrides[PermissionServiceDep] = _override
+    app.dependency_overrides[get_permission_service] = _override
 
     response = await client.get(
         f"/api/permissions/{uuid7()}/users", headers=auth_headers("GET", {})

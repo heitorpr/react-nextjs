@@ -151,9 +151,9 @@ async def delete_user(uuid: UUID, service: UserServiceDep):
     status_code=status.HTTP_200_OK,
 )
 async def list_users(
+    service: UserServiceDep,
     skip: int = Query(0, ge=0, description="Number of users to skip"),
     limit: int = Query(100, ge=1, le=1000, description="Number of users to return"),
-    service: UserServiceDep = None,
 ):
     return await service.list_users(skip, limit)
 

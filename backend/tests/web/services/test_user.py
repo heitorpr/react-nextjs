@@ -1,6 +1,6 @@
 import pytest
 
-from src.domain.models.user import UserPublic, UserUpdate
+from src.domain.models.user import UserPublic, UserUpdate, UserWithPermissions
 from src.domain.repositories.exceptions import NoUserFound
 from src.web.services.user import UserService
 
@@ -42,14 +42,12 @@ async def test_get_user_with_permissions(
     from src.domain.models.user_permission import UserPermissionCreate
 
     await user_permission_repository.create(
-        UserPermissionCreate(user_uuid=user.uuid, permission_uuid=permission.uuid),
-        user,
-        permission,
+        UserPermissionCreate(user_id=user.id, permission_id=permission.id)
     )
 
     user_with_permissions = await user_service.get_user_with_permissions(user.uuid)
 
-    assert isinstance(user_with_permissions, UserPublic)
+    assert isinstance(user_with_permissions, UserWithPermissions)
     assert user_with_permissions.email == user.email
     assert len(user_with_permissions.permissions) == 1
     assert permission.name in user_with_permissions.permissions
@@ -113,8 +111,8 @@ async def test_list_users(user_service, user_repository, user_create):
     user3_create.email = "user3@example.com"
     user3_create.google_id = "google_id_3"
 
-    user2 = await user_repository.create(user2_create)
-    user3 = await user_repository.create(user3_create)
+    await user_repository.create(user2_create)
+    await user_repository.create(user3_create)
 
     users = await user_service.list_users(skip=0, limit=10)
     assert len(users) >= 2  # At least the 2 we created in this test
@@ -157,9 +155,7 @@ async def test_check_user_has_permission_regular_user(
     from src.domain.models.user_permission import UserPermissionCreate
 
     await user_permission_repository.create(
-        UserPermissionCreate(user_uuid=user.uuid, permission_uuid=permission.uuid),
-        user,
-        permission,
+        UserPermissionCreate(user_id=user.id, permission_id=permission.id)
     )
 
     # Now user should have permission
@@ -177,9 +173,7 @@ async def test_get_user_permissions(user_service, user, permission, user_permiss
     from src.domain.models.user_permission import UserPermissionCreate
 
     await user_permission_repository.create(
-        UserPermissionCreate(user_uuid=user.uuid, permission_uuid=permission.uuid),
-        user,
-        permission,
+        UserPermissionCreate(user_id=user.id, permission_id=permission.id)
     )
 
     # Now user should have permission

@@ -307,7 +307,7 @@ class AdminTasks(TaskSet):
     def system_health_check(self):
         """Check system health and existing data"""
         # Get admin users
-        admins = self.get_admin_users()
+        self.get_admin_users()
 
         # List users
         headers = get_auth_headers("GET", "")

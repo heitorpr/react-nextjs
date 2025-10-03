@@ -76,8 +76,8 @@ async def test_list_all_permissions(db_session, permission_repository, permissio
     permission3_create = permission_create.model_copy()
     permission3_create.name = "permission_3"
 
-    permission2 = await permission_repository.create(permission2_create)
-    permission3 = await permission_repository.create(permission3_create)
+    await permission_repository.create(permission2_create)
+    await permission_repository.create(permission3_create)
 
     permissions = await permission_repository.list_all(skip=0, limit=10)
     assert len(permissions) >= 2  # At least the 2 we created in this test

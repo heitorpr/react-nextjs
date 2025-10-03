@@ -61,11 +61,8 @@ class PermissionService:
         if existing:
             return False
 
-        await self.user_permission_repository.create(
-            UserPermissionCreate(user_uuid=user_uuid, permission_uuid=permission_uuid),
-            user,
-            permission,
-        )
+        user_permission_create = UserPermissionCreate(user_id=user.id, permission_id=permission.id)
+        await self.user_permission_repository.create(user_permission_create)
         return True
 
     async def revoke_permission_from_user(self, user_uuid: UUID, permission_uuid: UUID) -> bool:

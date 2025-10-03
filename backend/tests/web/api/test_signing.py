@@ -69,7 +69,7 @@ async def test_invalid_signature():
         await signing(request)
 
     assert exc.value.status_code == 401
-    assert exc.value.detail["error"] == "Invalid signature"
+    assert exc.value.detail == "Invalid signature"
 
 
 async def test_multipart_form_data():

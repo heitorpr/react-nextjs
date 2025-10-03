@@ -4,7 +4,7 @@ from uuid6 import uuid7
 
 from src.domain.models.user import UserPublic, UserUpdate
 from src.domain.repositories.exceptions import NoUserFound
-from src.web.deps import UserServiceDep
+from src.web.deps.services import get_user_service
 from src.web.main import app
 from src.web.services import UserService
 
@@ -46,9 +46,7 @@ async def test_get_user_with_permissions(
     from src.domain.models.user_permission import UserPermissionCreate
 
     await user_permission_repository.create(
-        UserPermissionCreate(user_uuid=user.uuid, permission_uuid=permission.uuid),
-        user,
-        permission,
+        UserPermissionCreate(user_id=user.id, permission_id=permission.id)
     )
 
     response = await client.get(
@@ -138,8 +136,8 @@ async def test_list_users(client, user_repository, user_create, auth_headers):
     user3_create.email = "user3@example.com"
     user3_create.google_id = "google_id_3"
 
-    user2 = await user_repository.create(user2_create)
-    user3 = await user_repository.create(user3_create)
+    await user_repository.create(user2_create)
+    await user_repository.create(user3_create)
 
     response = await client.get("/api/users/", headers=auth_headers("GET", {}))
     assert response.status_code == status.HTTP_200_OK
@@ -178,9 +176,7 @@ async def test_check_user_permission(
     from src.domain.models.user_permission import UserPermissionCreate
 
     await user_permission_repository.create(
-        UserPermissionCreate(user_uuid=user.uuid, permission_uuid=permission.uuid),
-        user,
-        permission,
+        UserPermissionCreate(user_id=user.id, permission_id=permission.id)
     )
 
     # Now user should have permission
@@ -206,7 +202,8 @@ async def test_check_admin_user_permission(client, admin_user, auth_headers):
 async def test_get_user_permissions_list(
     client, user, permission, user_permission_repository, auth_headers
 ):
-    # User without permissions - this endpoint returns user with permissions, not just permissions list
+    # User without permissions - this endpoint returns user with permissions,
+    # not just permissions list
     response = await client.get(
         f"/api/users/{user.uuid}/permissions", headers=auth_headers("GET", {})
     )
@@ -219,9 +216,7 @@ async def test_get_user_permissions_list(
     from src.domain.models.user_permission import UserPermissionCreate
 
     await user_permission_repository.create(
-        UserPermissionCreate(user_uuid=user.uuid, permission_uuid=permission.uuid),
-        user,
-        permission,
+        UserPermissionCreate(user_id=user.id, permission_id=permission.id)
     )
 
     # Now user should have permission
@@ -245,7 +240,7 @@ async def test_get_user_not_found(client, auth_headers, mocker):
     def _override():
         return service_mock
 
-    app.dependency_overrides[UserServiceDep] = _override
+    app.dependency_overrides[get_user_service] = _override
 
     response = await client.get(f"/api/users/{uuid7()}", headers=auth_headers("GET", {}))
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -275,7 +270,7 @@ async def test_update_user_not_found(client, auth_headers, mocker):
     def _override():
         return service_mock
 
-    app.dependency_overrides[UserServiceDep] = _override
+    app.dependency_overrides[get_user_service] = _override
 
     user_update = UserUpdate(name="Updated Name")
     body = user_update.model_dump(mode="json", exclude_unset=True)
@@ -297,7 +292,7 @@ async def test_delete_user_not_found(client, auth_headers, mocker):
     def _override():
         return service_mock
 
-    app.dependency_overrides[UserServiceDep] = _override
+    app.dependency_overrides[get_user_service] = _override
 
     response = await client.delete(f"/api/users/{uuid7()}", headers=auth_headers("DELETE", {}))
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -314,7 +309,7 @@ async def test_check_user_permission_not_found(client, auth_headers, mocker):
     def _override():
         return service_mock
 
-    app.dependency_overrides[UserServiceDep] = _override
+    app.dependency_overrides[get_user_service] = _override
 
     response = await client.get(
         f"/api/users/{uuid7()}/has-permission/test_permission", headers=auth_headers("GET", {})

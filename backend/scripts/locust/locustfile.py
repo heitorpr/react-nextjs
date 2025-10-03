@@ -2,6 +2,9 @@ import sys
 import os
 from pathlib import Path
 
+from faker import Faker
+from locust import HttpUser, between
+
 # Add the backend root directory to Python path
 backend_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(backend_root))
@@ -9,12 +12,9 @@ sys.path.insert(0, str(backend_root))
 # Set the working directory to backend root so .env file can be found
 os.chdir(backend_root)
 
-from faker import Faker
-from locust import HttpUser, between
-
-from scripts.locust.user_task_set import UserTasks
-from scripts.locust.permission_task_set import PermissionTasks
-from scripts.locust.admin_task_set import AdminTasks
+from scripts.locust.user_task_set import UserTasks  # noqa: E402
+from scripts.locust.permission_task_set import PermissionTasks  # noqa: E402
+from scripts.locust.admin_task_set import AdminTasks  # noqa: E402
 
 faker = Faker()
 
